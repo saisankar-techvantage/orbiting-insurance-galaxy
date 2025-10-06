@@ -21,7 +21,7 @@ const satellites = [
     name: 'Underwriting AI', 
     icon: Shield, 
     orbit: 4, 
-    speed: 0.5, 
+    speed: 0.15, 
     color: '#00d4ff',
     isHero: false 
   },
@@ -29,7 +29,7 @@ const satellites = [
     name: 'Quote & Buy AI', 
     icon: ShoppingCart, 
     orbit: 4.5, 
-    speed: 0.45, 
+    speed: 0.14, 
     color: '#00d4ff',
     isHero: false 
   },
@@ -37,7 +37,7 @@ const satellites = [
     name: 'Customer Onboarding AI', 
     icon: UserCheck, 
     orbit: 5, 
-    speed: 0.4, 
+    speed: 0.13, 
     color: '#00d4ff',
     isHero: false 
   },
@@ -45,7 +45,7 @@ const satellites = [
     name: 'Claims Optimization AI', 
     icon: Zap, 
     orbit: 5.5, 
-    speed: 0.35, 
+    speed: 0.12, 
     color: '#a855f7',
     isHero: true 
   },
@@ -53,7 +53,7 @@ const satellites = [
     name: 'Claims Intake AI', 
     icon: Mail, 
     orbit: 6, 
-    speed: 0.3, 
+    speed: 0.11, 
     color: '#00d4ff',
     isHero: false 
   },
@@ -61,7 +61,7 @@ const satellites = [
     name: 'Internal Audit AI', 
     icon: Search, 
     orbit: 6.5, 
-    speed: 0.28, 
+    speed: 0.10, 
     color: '#00d4ff',
     isHero: false 
   },
@@ -69,7 +69,7 @@ const satellites = [
     name: 'Claims Audit AI', 
     icon: FileCheck, 
     orbit: 7, 
-    speed: 0.25, 
+    speed: 0.09, 
     color: '#00d4ff',
     isHero: false 
   },
@@ -77,7 +77,7 @@ const satellites = [
     name: 'Customer Support AI', 
     icon: MessageCircle, 
     orbit: 7.5, 
-    speed: 0.22, 
+    speed: 0.08, 
     color: '#a855f7',
     isHero: true 
   },
@@ -85,7 +85,7 @@ const satellites = [
     name: 'Go-Do Voice/WhatsApp AI', 
     icon: Phone, 
     orbit: 8, 
-    speed: 0.2, 
+    speed: 0.07, 
     color: '#a855f7',
     isHero: true 
   },
@@ -93,7 +93,7 @@ const satellites = [
     name: 'High-Value Risk AI', 
     icon: Ship, 
     orbit: 8.5, 
-    speed: 0.18, 
+    speed: 0.06, 
     color: '#a855f7',
     isHero: true 
   },
@@ -243,29 +243,35 @@ function SatelliteNode({
       {/* Icon and Label inside node */}
       <Html
         center
-        distanceFactor={2}
+        distanceFactor={1.5}
         style={{
-          pointerEvents: 'none',
+          pointerEvents: 'auto',
           userSelect: 'none',
           transition: 'all 0.2s',
         }}
       >
-        <div className="flex flex-col items-center gap-1" style={{ width: '120px' }}>
+        <div 
+          className="flex flex-col items-center gap-2 cursor-pointer" 
+          style={{ width: '160px' }}
+          onClick={onClick}
+        >
           <div 
-            className="flex items-center justify-center rounded-full p-2 cursor-pointer"
+            className="flex items-center justify-center rounded-full p-3 shadow-lg"
             style={{
               backgroundColor: satellite.color,
-              transform: isSelected ? 'scale(1.1)' : 'scale(1)',
+              transform: isSelected ? 'scale(1.2)' : 'scale(1)',
+              boxShadow: `0 0 20px ${satellite.color}`,
             }}
           >
-            <Icon size={satellite.isHero ? 24 : 20} color="#000" strokeWidth={2.5} />
+            <Icon size={satellite.isHero ? 32 : 28} color="#000" strokeWidth={2.5} />
           </div>
           <span 
-            className="text-xs font-medium text-center whitespace-nowrap"
+            className="font-semibold text-center leading-tight"
             style={{
-              color: satellite.color,
-              textShadow: `0 0 10px ${satellite.color}`,
-              fontSize: satellite.isHero ? '11px' : '9px',
+              color: '#ffffff',
+              textShadow: `0 0 15px ${satellite.color}, 0 2px 4px rgba(0,0,0,0.8)`,
+              fontSize: satellite.isHero ? '14px' : '12px',
+              fontFamily: 'Orbitron, sans-serif',
             }}
           >
             {satellite.name}
