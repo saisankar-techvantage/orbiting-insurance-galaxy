@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance OS Ecosystem - 3D Solar System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0e27 0%, #000000 100%);
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            pointer-events: auto;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00d4ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            pointer-events: auto;
+        }
+
+        .satellite-info {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            background: rgba(10, 14, 39, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 350px;
+            color: white;
+            pointer-events: auto;
+            display: none;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .satellite-info.active {
+            display: block;
+        }
+
+        .satellite-info h3 {
+            color: #00d4ff;
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .satellite-info p {
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00d4ff;
+            border: none;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .close-btn:hover {
+            background: #a855f7;
+        }
+
+        .node-label {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8);
+            transform: translate(-50%, -50%);
+        }
+
+        .icon-container {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="overlay">
+        <div class="header">
+            <h1>Insurance OS Ecosystem</h1>
+            <p>Powered by AI - The Invisible Intelligence Layer</p>
+        </div>
+        <div class="controls">
+            🖱️ Drag to rotate • 🔍 Scroll to zoom • 🖱️ Click nodes to explore
+        </div>
+        <div class="satellite-info" id="info-panel">
+            <button class="close-btn" onclick="closeInfo()">×</button>
+            <h3 id="info-title"></h3>
+            <p id="info-description"></p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Satellite data
+        const satellites = [
+            { name: 'Underwriting AI', orbit: 4, speed: 0.15, color: 0x00d4ff, isHero: false, icon: '🛡️' },
+            { name: 'Quote & Buy AI', orbit: 4.5, speed: 0.14, color: 0x00d4ff, isHero: false, icon: '🛍️' },
+            { name: 'Customer Onboarding AI', orbit: 5, speed: 0.13, color: 0x00d4ff, isHero: false, icon: '👤' },
+            { name: 'Claims Optimization AI', orbit: 5.5, speed: 0.12, color: 0xa855f7, isHero: true, icon: '⚡' },
+            { name: 'Claims Intake AI', orbit: 6, speed: 0.11, color: 0x00d4ff, isHero: false, icon: '📨' },
+            { name: 'Internal Audit AI', orbit: 6.5, speed: 0.10, color: 0x00d4ff, isHero: false, icon: '🔍' },
+            { name: 'Claims Audit AI', orbit: 7, speed: 0.09, color: 0x00d4ff, isHero: false, icon: '📋' },
+            { name: 'Customer Support AI', orbit: 7.5, speed: 0.08, color: 0xa855f7, isHero: true, icon: '💬' },
+            { name: 'Go-Do Voice/WhatsApp AI', orbit: 8, speed: 0.07, color: 0xa855f7, isHero: true, icon: '📞' },
+            { name: 'High-Value Risk AI', orbit: 8.5, speed: 0.06, color: 0xa855f7, isHero: true, icon: '🚢' }
+        ];
+
+        const descriptions = {
+            'Underwriting AI': 'Automated risk assessment and policy underwriting powered by advanced AI algorithms.',
+            'Quote & Buy AI': 'Instant quote generation and seamless purchase experience for customers.',
+            'Customer Onboarding AI': 'Streamlined customer registration and verification process.',
+            'Claims Optimization AI': 'Intelligent claims processing and optimization to reduce processing time.',
+            'Claims Intake AI': 'Automated claims submission and initial assessment system.',
+            'Internal Audit AI': 'Continuous monitoring and auditing of internal processes and compliance.',
+            'Claims Audit AI': 'Advanced fraud detection and claims validation.',
+            'Customer Support AI': '24/7 intelligent customer support with natural language understanding.',
+            'Go-Do Voice/WhatsApp AI': 'Multi-channel communication via voice and WhatsApp integration.',
+            'High-Value Risk AI': 'Specialized AI for marine, energy, and high-value risk assessment.'
+        };
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        camera.position.set(0, 8, 15);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        // Stars
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
+        const starsVertices = [];
+        for (let i = 0; i < 5000; i++) {
+            const x = (Math.random() - 0.5) * 600;
+            const y = (Math.random() - 0.5) * 600;
+            const z = (Math.random() - 0.5) * 600;
+            starsVertices.push(x, y, z);
+        }
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        // Central orb
+        const orbGeometry = new THREE.SphereGeometry(1.5, 64, 64);
+        const orbMaterial = new THREE.MeshStandardMaterial({
+            color: 0x00d4ff,
+            emissive: 0x00d4ff,
+            emissiveIntensity: 0.8,
+            transparent: true,
+            opacity: 0.9
+        });
+        const centralOrb = new THREE.Mesh(orbGeometry, orbMaterial);
+        scene.add(centralOrb);
+
+        // Orb glow
+        const glowGeometry = new THREE.SphereGeometry(1.7, 32, 32);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00d4ff,
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.BackSide
+        });
+        const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+        scene.add(glow);
+
+        // Central light
+        const centralLight = new THREE.PointLight(0x00d4ff, 2, 20);
+        scene.add(centralLight);
+
+        // Orbit rings and satellites
+        const orbitRings = [];
+        const satelliteNodes = [];
+        const satelliteLabels = [];
+        const satelliteIcons = [];
+
+        satellites.forEach((satellite, index) => {
+            // Orbit ring
+            const ringGeometry = new THREE.RingGeometry(satellite.orbit - 0.02, satellite.orbit + 0.02, 128);
+            const ringMaterial = new THREE.MeshBasicMaterial({
+                color: satellite.color,
+                transparent: true,
+                opacity: 0.15,
+                side: THREE.DoubleSide
+            });
+            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            ring.rotation.x = Math.PI / 2;
+            scene.add(ring);
+            orbitRings.push(ring);
+
+            // Satellite node
+            const scale = satellite.isHero ? 1.3 : 1;
+            const nodeGeometry = new THREE.SphereGeometry(0.3 * scale, 32, 32);
+            const nodeMaterial = new THREE.MeshStandardMaterial({
+                color: satellite.color,
+                emissive: satellite.color,
+                emissiveIntensity: satellite.isHero ? 0.6 : 0.4,
+                transparent: true,
+                opacity: 0.3
+            });
+            const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+            
+            // Satellite light
+            const nodeLight = new THREE.PointLight(satellite.color, 0.5, 3);
+            node.add(nodeLight);
+            
+            scene.add(node);
+            satelliteNodes.push({ mesh: node, data: satellite, index });
+
+            // Create HTML label
+            const label = document.createElement('div');
+            label.className = 'node-label';
+            label.textContent = satellite.name;
+            label.style.fontSize = satellite.isHero ? '14px' : '12px';
+            label.style.color = '#' + satellite.color.toString(16).padStart(6, '0');
+            document.getElementById('overlay').appendChild(label);
+            satelliteLabels.push(label);
+
+            // Create HTML icon
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'icon-container';
+            iconDiv.style.backgroundColor = '#' + satellite.color.toString(16).padStart(6, '0');
+            iconDiv.style.boxShadow = `0 0 20px #${satellite.color.toString(16).padStart(6, '0')}`;
+            iconDiv.innerHTML = `<span style="font-size: ${satellite.isHero ? '24px' : '20px'}">${satellite.icon}</span>`;
+            iconDiv.onclick = () => showInfo(index);
+            document.getElementById('overlay').appendChild(iconDiv);
+            satelliteIcons.push(iconDiv);
+        });
+
+        // Mouse controls
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        const rotationSpeed = { x: 0, y: 0 };
+
+        renderer.domElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        renderer.domElement.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+                rotationSpeed.y = deltaMove.x * 0.005;
+                rotationSpeed.x = deltaMove.y * 0.005;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        renderer.domElement.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        renderer.domElement.addEventListener('wheel', (e) => {
+            camera.position.z += e.deltaY * 0.01;
+            camera.position.z = Math.max(10, Math.min(25, camera.position.z));
+        });
+
+        // Info panel functions
+        function showInfo(index) {
+            const satellite = satellites[index];
+            document.getElementById('info-title').textContent = satellite.name;
+            document.getElementById('info-description').textContent = descriptions[satellite.name];
+            document.getElementById('info-panel').classList.add('active');
+        }
+
+        function closeInfo() {
+            document.getElementById('info-panel').classList.remove('active');
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            // Rotate central orb
+            centralOrb.rotation.y = time * 0.1;
+            const scale = 1 + Math.sin(time * 2) * 0.05;
+            centralOrb.scale.set(scale, scale, scale);
+            centralLight.intensity = 2 + Math.sin(time * 2) * 0.5;
+
+            // Apply rotation from mouse drag
+            if (!isDragging) {
+                rotationSpeed.x *= 0.95;
+                rotationSpeed.y *= 0.95;
+            }
+            scene.rotation.y += rotationSpeed.y;
+            scene.rotation.x += rotationSpeed.x;
+
+            // Update satellites
+            satelliteNodes.forEach(({ mesh, data, index }) => {
+                const angle = (time * data.speed) + (index * (Math.PI * 2) / satellites.length);
+                const x = Math.cos(angle) * data.orbit;
+                const z = Math.sin(angle) * data.orbit;
+                const y = Math.sin(time * 2 + index) * 0.1;
+                mesh.position.set(x, y, z);
+
+                // Update label and icon positions
+                const vector = new THREE.Vector3(x, y + 0.8, z);
+                vector.project(camera);
+                const screenX = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const screenY = (vector.y * -0.5 + 0.5) * window.innerHeight;
+
+                satelliteLabels[index].style.left = screenX + 'px';
+                satelliteLabels[index].style.top = screenY + 'px';
+
+                const iconVector = new THREE.Vector3(x, y, z);
+                iconVector.project(camera);
+                const iconX = (iconVector.x * 0.5 + 0.5) * window.innerWidth;
+                const iconY = (iconVector.y * -0.5 + 0.5) * window.innerHeight;
+
+                satelliteIcons[index].style.left = iconX + 'px';
+                satelliteIcons[index].style.top = iconY + 'px';
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
