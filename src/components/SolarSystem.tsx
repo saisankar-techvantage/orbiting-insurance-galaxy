@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls, Stars, PerspectiveCamera, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { 
   Shield, 
@@ -206,6 +206,8 @@ function SatelliteNode({
   const scale = satellite.isHero ? 1.3 : 1;
   const glowIntensity = satellite.isHero ? 0.6 : 0.4;
 
+  const Icon = satellite.icon;
+
   return (
     <group ref={groupRef}>
       <mesh 
@@ -220,7 +222,7 @@ function SatelliteNode({
           emissive={satellite.color}
           emissiveIntensity={glowIntensity}
           transparent
-          opacity={0.9}
+          opacity={0.3}
         />
       </mesh>
       
@@ -237,6 +239,39 @@ function SatelliteNode({
 
       {/* Point light */}
       <pointLight color={satellite.color} intensity={0.5} distance={3} />
+      
+      {/* Icon and Label inside node */}
+      <Html
+        center
+        distanceFactor={2}
+        style={{
+          pointerEvents: 'none',
+          userSelect: 'none',
+          transition: 'all 0.2s',
+        }}
+      >
+        <div className="flex flex-col items-center gap-1" style={{ width: '120px' }}>
+          <div 
+            className="flex items-center justify-center rounded-full p-2 cursor-pointer"
+            style={{
+              backgroundColor: satellite.color,
+              transform: isSelected ? 'scale(1.1)' : 'scale(1)',
+            }}
+          >
+            <Icon size={satellite.isHero ? 24 : 20} color="#000" strokeWidth={2.5} />
+          </div>
+          <span 
+            className="text-xs font-medium text-center whitespace-nowrap"
+            style={{
+              color: satellite.color,
+              textShadow: `0 0 10px ${satellite.color}`,
+              fontSize: satellite.isHero ? '11px' : '9px',
+            }}
+          >
+            {satellite.name}
+          </span>
+        </div>
+      </Html>
     </group>
   );
 }
