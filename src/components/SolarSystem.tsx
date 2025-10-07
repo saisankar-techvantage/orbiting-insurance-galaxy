@@ -203,8 +203,8 @@ function SatelliteNode({
     }
   });
 
-  const scale = satellite.isHero ? 1.3 : 1;
-  const glowIntensity = satellite.isHero ? 0.6 : 0.4;
+  const scale = satellite.isHero ? 1.35 : 1.1;
+  const glowIntensity = satellite.isHero ? 0.9 : 0.7;
 
   const Icon = satellite.icon;
 
@@ -216,13 +216,13 @@ function SatelliteNode({
         scale={isSelected ? scale * 1.2 : scale}
       >
         {/* Node sphere */}
-        <sphereGeometry args={[0.3, 32, 32]} />
+        <sphereGeometry args={[0.5, 32, 32]} />
         <meshStandardMaterial
           color={satellite.color}
           emissive={satellite.color}
           emissiveIntensity={glowIntensity}
           transparent
-          opacity={0.3}
+          opacity={0.45}
         />
       </mesh>
       
@@ -238,12 +238,12 @@ function SatelliteNode({
       </mesh>
 
       {/* Point light */}
-      <pointLight color={satellite.color} intensity={0.5} distance={3} />
+      <pointLight color={satellite.color} intensity={1.2} distance={4} />
       
       {/* Icon and Label inside node */}
       <Html
         center
-        distanceFactor={1.2}
+        distanceFactor={1.8}
         style={{
           pointerEvents: 'auto',
           userSelect: 'none',
@@ -252,7 +252,7 @@ function SatelliteNode({
       >
         <div 
           className="flex flex-col items-center gap-3 cursor-pointer hover:scale-110 transition-transform" 
-          style={{ width: '180px' }}
+          style={{ width: '220px' }}
           onClick={onClick}
         >
           <div 
@@ -263,21 +263,21 @@ function SatelliteNode({
               boxShadow: `0 0 30px ${satellite.color}, 0 0 60px ${satellite.color}50`,
             }}
           >
-            <Icon size={satellite.isHero ? 36 : 32} color="#000" strokeWidth={3} />
+            <Icon size={satellite.isHero ? 44 : 38} color="#000" strokeWidth={3} />
           </div>
-          <div
-            className="px-4 py-2 rounded-lg backdrop-blur-sm"
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              border: `1px solid ${satellite.color}40`,
-            }}
-          >
+        <div
+          className="px-4 py-2 rounded-lg backdrop-blur-sm"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            border: `1px solid ${satellite.color}40`,
+          }}
+        >
             <span 
               className="font-bold text-center leading-tight block"
               style={{
                 color: '#ffffff',
                 textShadow: `0 0 20px ${satellite.color}, 0 0 10px ${satellite.color}, 0 2px 6px rgba(0,0,0,0.9)`,
-                fontSize: satellite.isHero ? '15px' : '13px',
+                fontSize: satellite.isHero ? '16px' : '14px',
                 fontFamily: 'Orbitron, sans-serif',
                 letterSpacing: '0.5px',
               }}

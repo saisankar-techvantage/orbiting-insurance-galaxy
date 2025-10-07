@@ -18,10 +18,10 @@ const Index = () => {
       }}
     >
       {/* Cosmic gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-cosmic opacity-80" />
+      <div className="absolute inset-0 bg-gradient-cosmic opacity-80 pointer-events-none" />
       
       {/* Particles effect overlay */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
         <div className="absolute w-full h-full animate-float">
           {[...Array(50)].map((_, i) => (
             <div
