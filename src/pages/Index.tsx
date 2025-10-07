@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SolarSystem from '@/components/SolarSystem';
 import UIOverlay from '@/components/UIOverlay';
+import NodePopup from '@/components/NodePopup';
 import cosmicBg from '@/assets/cosmic-background.jpg';
 
 const Index = () => {
@@ -38,11 +39,20 @@ const Index = () => {
       </div>
 
       {/* 3D Solar System */}
-      <SolarSystem />
+      <SolarSystem 
+        selectedSatellite={selectedSatellite}
+        onSatelliteClick={setSelectedSatellite}
+      />
 
       {/* 2D UI Overlay */}
       <UIOverlay 
         selectedSatellite={selectedSatellite}
+        onClose={() => setSelectedSatellite(null)}
+      />
+
+      {/* Node Popup Dialog */}
+      <NodePopup 
+        selectedIndex={selectedSatellite}
         onClose={() => setSelectedSatellite(null)}
       />
     </div>
