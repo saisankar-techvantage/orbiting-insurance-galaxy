@@ -243,48 +243,39 @@ function SatelliteNode({
       {/* Icon and Label inside node */}
       <Html
         center
-        distanceFactor={1.2}
+        distanceFactor={1.5}
         style={{
           pointerEvents: 'auto',
           userSelect: 'none',
-          transition: 'all 0.3s ease',
+          transition: 'all 0.2s',
         }}
       >
         <div 
-          className="flex flex-col items-center gap-3 cursor-pointer hover:scale-110 transition-transform" 
-          style={{ width: '180px' }}
+          className="flex flex-col items-center gap-2 cursor-pointer" 
+          style={{ width: '160px' }}
           onClick={onClick}
         >
           <div 
-            className="flex items-center justify-center rounded-full p-4 shadow-2xl border-2 border-white/20"
+            className="flex items-center justify-center rounded-full p-3 shadow-lg"
             style={{
               backgroundColor: satellite.color,
-              transform: isSelected ? 'scale(1.3)' : 'scale(1)',
-              boxShadow: `0 0 30px ${satellite.color}, 0 0 60px ${satellite.color}50`,
+              transform: isSelected ? 'scale(1.2)' : 'scale(1)',
+              boxShadow: `0 0 20px ${satellite.color}`,
             }}
           >
-            <Icon size={satellite.isHero ? 36 : 32} color="#000" strokeWidth={3} />
+            <Icon size={satellite.isHero ? 32 : 28} color="#000" strokeWidth={2.5} />
           </div>
-          <div
-            className="px-4 py-2 rounded-lg backdrop-blur-sm"
+          <span 
+            className="font-semibold text-center leading-tight"
             style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              border: `1px solid ${satellite.color}40`,
+              color: '#ffffff',
+              textShadow: `0 0 15px ${satellite.color}, 0 2px 4px rgba(0,0,0,0.8)`,
+              fontSize: satellite.isHero ? '14px' : '12px',
+              fontFamily: 'Orbitron, sans-serif',
             }}
           >
-            <span 
-              className="font-bold text-center leading-tight block"
-              style={{
-                color: '#ffffff',
-                textShadow: `0 0 20px ${satellite.color}, 0 0 10px ${satellite.color}, 0 2px 6px rgba(0,0,0,0.9)`,
-                fontSize: satellite.isHero ? '15px' : '13px',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '0.5px',
-              }}
-            >
-              {satellite.name}
-            </span>
-          </div>
+            {satellite.name}
+          </span>
         </div>
       </Html>
     </group>
@@ -341,15 +332,11 @@ function Scene({ onSatelliteClick, selectedIndex }: {
 }
 
 // Main Solar System Component
-export default function SolarSystem({ 
-  selectedSatellite, 
-  onSatelliteClick 
-}: { 
-  selectedSatellite: number | null;
-  onSatelliteClick: (index: number) => void;
-}) {
+export default function SolarSystem() {
+  const [selectedSatellite, setSelectedSatellite] = useState<number | null>(null);
+
   const handleSatelliteClick = (index: number) => {
-    onSatelliteClick(index === -1 ? null : index);
+    setSelectedSatellite(index === -1 ? null : index);
   };
 
   return (
@@ -360,6 +347,8 @@ export default function SolarSystem({
           selectedIndex={selectedSatellite}
         />
       </Canvas>
+      
+      {/* 2D UI Overlay will be added in parent component */}
     </div>
   );
 }
