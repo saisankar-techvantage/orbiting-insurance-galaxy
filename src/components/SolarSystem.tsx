@@ -15,12 +15,6 @@ import {
   Ship 
 } from 'lucide-react';
 
-// Central hub data
-const centralHub = {
-  name: 'AI Insurance Platform',
-  description: 'Neural Network Powered Insurance Solutions'
-};
-
 // Neural network node data with layer positions
 const satellites = [
   { 
@@ -115,7 +109,7 @@ function getNodePosition(layer: number, position: number, totalInLayer: number):
 }
 
 // Central Hub Component
-function CentralHub() {
+function CentralHub({ onClick }: { onClick: () => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
 
@@ -132,7 +126,7 @@ function CentralHub() {
   });
 
   return (
-    <group>
+    <group onClick={onClick}>
       <mesh ref={meshRef}>
         <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial
@@ -155,52 +149,6 @@ function CentralHub() {
       </mesh>
 
       <pointLight ref={lightRef} color="#00d4ff" intensity={2} distance={20} />
-      
-      {/* Central Hub Label */}
-      <Html
-        center
-        distanceFactor={2}
-        style={{
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
-      >
-        <div className="flex flex-col items-center gap-2" style={{ width: '280px' }}>
-          <div
-            className="px-6 py-3 rounded-xl backdrop-blur-md border-2"
-            style={{
-              backgroundColor: 'rgba(0, 212, 255, 0.15)',
-              border: '2px solid #00d4ff',
-              boxShadow: '0 0 40px #00d4ff, 0 0 80px #00d4ff50',
-            }}
-          >
-            <h1 
-              className="font-bold text-center leading-tight"
-              style={{
-                color: '#00d4ff',
-                textShadow: '0 0 30px #00d4ff, 0 0 15px #00d4ff, 0 2px 8px rgba(0,0,0,0.9)',
-                fontSize: '20px',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '1px',
-              }}
-            >
-              {centralHub.name}
-            </h1>
-            <p
-              className="text-center mt-1"
-              style={{
-                color: '#ffffff',
-                textShadow: '0 0 15px #00d4ff, 0 2px 6px rgba(0,0,0,0.9)',
-                fontSize: '12px',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '0.5px',
-              }}
-            >
-              {centralHub.description}
-            </p>
-          </div>
-        </div>
-      </Html>
     </group>
   );
 }
@@ -224,15 +172,13 @@ function NeuralNode({
   index, 
   onClick, 
   isSelected,
-  position,
-  hideLabel
+  position 
 }: { 
   satellite: typeof satellites[0]; 
   index: number; 
   onClick: () => void;
   isSelected: boolean;
   position: [number, number, number];
-  hideLabel: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
@@ -287,63 +233,60 @@ function NeuralNode({
       <pointLight color={satellite.color} intensity={1.2} distance={4} />
       
       {/* Icon and Label inside node */}
-      {!hideLabel && (
-        <Html
-          center
-          distanceFactor={1.5}
-          style={{
-            pointerEvents: 'auto',
-            userSelect: 'none',
-            transition: 'all 0.3s ease',
-          }}
+      <Html
+        center
+        distanceFactor={1.8}
+        style={{
+          pointerEvents: 'auto',
+          userSelect: 'none',
+          transition: 'all 0.3s ease',
+        }}
+      >
+        <div 
+          className="flex flex-col items-center gap-3 cursor-pointer hover:scale-110 transition-transform" 
+          style={{ width: '220px' }}
+          onClick={onClick}
         >
           <div 
-            className="flex flex-col items-center gap-3 cursor-pointer hover:scale-110 transition-transform" 
-            style={{ width: '260px' }}
-            onClick={onClick}
+            className="flex items-center justify-center rounded-full p-4 shadow-2xl border-2 border-white/20"
+            style={{
+              backgroundColor: satellite.color,
+              transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+              boxShadow: `0 0 30px ${satellite.color}, 0 0 60px ${satellite.color}50`,
+            }}
           >
-            <div 
-              className="flex items-center justify-center rounded-full p-5 shadow-2xl border-2 border-white/20"
-              style={{
-                backgroundColor: satellite.color,
-                transform: isSelected ? 'scale(1.3)' : 'scale(1)',
-                boxShadow: `0 0 40px ${satellite.color}, 0 0 80px ${satellite.color}50`,
-              }}
-            >
-              <Icon size={satellite.isHero ? 52 : 46} color="#000" strokeWidth={3} />
-            </div>
-            <div
-              className="px-5 py-3 rounded-lg backdrop-blur-sm"
-              style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                border: `2px solid ${satellite.color}60`,
-              }}
-            >
-              <span 
-                className="font-bold text-center leading-tight block"
-                style={{
-                  color: '#ffffff',
-                  textShadow: `0 0 25px ${satellite.color}, 0 0 12px ${satellite.color}, 0 2px 8px rgba(0,0,0,0.9)`,
-                  fontSize: satellite.isHero ? '18px' : '16px',
-                  fontFamily: 'Orbitron, sans-serif',
-                  letterSpacing: '0.5px',
-                }}
-              >
-                {satellite.name}
-              </span>
-            </div>
+            <Icon size={satellite.isHero ? 44 : 38} color="#000" strokeWidth={3} />
           </div>
-        </Html>
-      )}
+        <div
+          className="px-4 py-2 rounded-lg backdrop-blur-sm"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            border: `1px solid ${satellite.color}40`,
+          }}
+        >
+            <span 
+              className="font-bold text-center leading-tight block"
+              style={{
+                color: '#ffffff',
+                textShadow: `0 0 20px ${satellite.color}, 0 0 10px ${satellite.color}, 0 2px 6px rgba(0,0,0,0.9)`,
+                fontSize: satellite.isHero ? '16px' : '14px',
+                fontFamily: 'Orbitron, sans-serif',
+                letterSpacing: '0.5px',
+              }}
+            >
+              {satellite.name}
+            </span>
+          </div>
+        </div>
+      </Html>
     </group>
   );
 }
 
 // 3D Scene Component
-function Scene({ onSatelliteClick, selectedIndex, hideLabels }: { 
+function Scene({ onSatelliteClick, selectedIndex }: { 
   onSatelliteClick: (index: number) => void;
   selectedIndex: number | null;
-  hideLabels: boolean;
 }) {
   // Group satellites by layer
   const layerGroups: { [key: number]: typeof satellites } = {};
@@ -391,7 +334,7 @@ function Scene({ onSatelliteClick, selectedIndex, hideLabels }: {
       <ambientLight intensity={0.3} />
       
       {/* Central hub */}
-      <CentralHub />
+      <CentralHub onClick={() => onSatelliteClick(-1)} />
 
       {/* Connection lines */}
       {connections.map((conn, idx) => (
@@ -412,7 +355,6 @@ function Scene({ onSatelliteClick, selectedIndex, hideLabels }: {
           onClick={() => onSatelliteClick(index)}
           isSelected={selectedIndex === index}
           position={nodePositions[index]}
-          hideLabel={hideLabels}
         />
       ))}
     </>
@@ -428,7 +370,7 @@ export default function SolarSystem({
   onSatelliteClick: (index: number) => void;
 }) {
   const handleSatelliteClick = (index: number) => {
-    onSatelliteClick(index);
+    onSatelliteClick(index === -1 ? null : index);
   };
 
   return (
@@ -437,7 +379,6 @@ export default function SolarSystem({
         <Scene 
           onSatelliteClick={handleSatelliteClick} 
           selectedIndex={selectedSatellite}
-          hideLabels={selectedSatellite !== null}
         />
       </Canvas>
     </div>
