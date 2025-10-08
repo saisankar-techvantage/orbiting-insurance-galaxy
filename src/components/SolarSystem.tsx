@@ -249,7 +249,7 @@ function NeuralNode({
     }
   });
 
-  const scale = satellite.isHero ? 1.35 : 1.1;
+  const scale = satellite.isHero ? 2.35 : 2.1;
   const glowIntensity = satellite.isHero ? 0.9 : 0.7;
 
   const Icon = satellite.icon;
@@ -259,7 +259,7 @@ function NeuralNode({
       <mesh 
         ref={meshRef} 
         onClick={onClick}
-        scale={isSelected ? scale * 1.2 : scale}
+        scale={isSelected ? scale * 0.2 : scale}
       >
         {/* Node sphere */}
         <sphereGeometry args={[0.5, 32, 32]} />
@@ -268,7 +268,7 @@ function NeuralNode({
           emissive={satellite.color}
           emissiveIntensity={glowIntensity}
           transparent
-          opacity={0.45}
+          opacity={0.55}
         />
       </mesh>
       
@@ -278,7 +278,7 @@ function NeuralNode({
         <meshBasicMaterial
           color={satellite.color}
           transparent
-          opacity={0.2}
+          opacity={0.3}
           side={THREE.BackSide}
         />
       </mesh>
@@ -310,13 +310,13 @@ function NeuralNode({
                 boxShadow: `0 0 40px ${satellite.color}, 0 0 80px ${satellite.color}50`,
               }}
             >
-              <Icon size={satellite.isHero ? 52 : 46} color="#000" strokeWidth={3} />
+              <Icon size={satellite.isHero ? 102 : 96} color="#000" strokeWidth={3} />
             </div>
             <div
               className="px-5 py-3 rounded-lg backdrop-blur-sm"
               style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                border: `2px solid ${satellite.color}60`,
+                //backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                //border: `2px solid ${satellite.color}60`,
               }}
             >
               <span 
@@ -324,9 +324,9 @@ function NeuralNode({
                 style={{
                   color: '#ffffff',
                   textShadow: `0 0 25px ${satellite.color}, 0 0 12px ${satellite.color}, 0 2px 8px rgba(0,0,0,0.9)`,
-                  fontSize: satellite.isHero ? '18px' : '16px',
+                  fontSize: satellite.isHero ? '98px' : '96px',
                   fontFamily: 'Orbitron, sans-serif',
-                  letterSpacing: '0.5px',
+                  letterSpacing: '1px',
                 }}
               >
                 {satellite.name}
