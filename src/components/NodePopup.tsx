@@ -29,6 +29,14 @@ export default function NodePopup({ selectedIndex, onClose }: NodePopupProps) {
       <DialogContent className="sm:max-w-[500px] bg-card/95 backdrop-blur-xl border-2" 
         style={{ borderColor: satellite.color + '40' }}>
         <DialogHeader>
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 hover:bg-primary/10"
+          >
+            <X className="h-5 w-5" />
+          </Button>
           <div className="flex items-center gap-4 pt-2">
             <div 
               className="flex items-center justify-center rounded-2xl p-4 shadow-2xl border-2 border-white/20"
