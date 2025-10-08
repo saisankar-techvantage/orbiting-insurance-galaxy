@@ -205,16 +205,29 @@ function CentralHub() {
   );
 }
 
-// Connection Line Component
+// Connection Line Component using 3D cylinders
 function ConnectionLine({ start, end, color }: { start: [number, number, number]; end: [number, number, number]; color: string }) {
+  const startVec = new THREE.Vector3(...start);
+  const endVec = new THREE.Vector3(...end);
+  const direction = new THREE.Vector3().subVectors(endVec, startVec);
+  const length = direction.length();
+  const midpoint = new THREE.Vector3().addVectors(startVec, endVec).multiplyScalar(0.5);
+  
+  const quaternion = new THREE.Quaternion();
+  quaternion.setFromUnitVectors(
+    new THREE.Vector3(0, 1, 0),
+    direction.clone().normalize()
+  );
+
   return (
-    <Line
-      points={[start, end]}
-      color={color}
-      lineWidth={2}
-      transparent
-      opacity={0.3}
-    />
+    <mesh position={midpoint} quaternion={quaternion}>
+      <cylinderGeometry args={[0.02, 0.02, length, 8]} />
+      <meshBasicMaterial 
+        color={color} 
+        transparent 
+        opacity={0.4}
+      />
+    </mesh>
   );
 }
 
