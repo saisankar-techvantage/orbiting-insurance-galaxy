@@ -109,9 +109,12 @@ const satellites = [
 function getNodePosition(layer: number, position: number, totalInLayer: number): [number, number, number] {
   const layerSpacing = 5;
   const verticalSpacing = 2.5;
+  const depthVariation = 3;
   const x = (layer - 2) * layerSpacing; // Center around 0
   const y = (position - (totalInLayer - 1) / 2) * verticalSpacing;
-  return [x, y, 0];
+  // Add depth variation based on position to create 3D effect
+  const z = Math.sin(position * Math.PI / totalInLayer) * depthVariation;
+  return [x, y, z];
 }
 
 // Central Hub Component
@@ -389,12 +392,14 @@ function Scene({ onSatelliteClick, selectedIndex, hideLabels }: {
 
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={50} />
+      <PerspectiveCamera makeDefault position={[5, 3, 20]} fov={50} />
       <OrbitControls
         enablePan={true}
         enableZoom={true}
+        enableRotate={true}
         minDistance={12}
-        maxDistance={30}
+        maxDistance={35}
+        autoRotate={false}
       />
 
       {/* Starfield */}
