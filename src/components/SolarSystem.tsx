@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera, Html } from '@react-three/drei';
+import { OrbitControls, Stars, PerspectiveCamera, Html, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { 
   Shield, 
@@ -15,92 +15,101 @@ import {
   Ship 
 } from 'lucide-react';
 
-// Satellite data
+// Neural network node data with layer positions
 const satellites = [
   { 
     name: 'Underwriting AI', 
     icon: Shield, 
-    orbit: 4, 
-    speed: 0.15, 
+    layer: 1, 
+    position: 0,
     color: '#00d4ff',
     isHero: false 
   },
   { 
     name: 'Quote & Buy AI', 
     icon: ShoppingCart, 
-    orbit: 4.5, 
-    speed: 0.14, 
+    layer: 1, 
+    position: 1,
     color: '#00d4ff',
     isHero: false 
   },
   { 
     name: 'Customer Onboarding AI', 
     icon: UserCheck, 
-    orbit: 5, 
-    speed: 0.13, 
+    layer: 1, 
+    position: 2,
     color: '#00d4ff',
     isHero: false 
   },
   { 
     name: 'Claims Optimization AI', 
     icon: Zap, 
-    orbit: 5.5, 
-    speed: 0.12, 
+    layer: 2, 
+    position: 0,
     color: '#a855f7',
     isHero: true 
   },
   { 
     name: 'Claims Intake AI', 
     icon: Mail, 
-    orbit: 6, 
-    speed: 0.11, 
+    layer: 2, 
+    position: 1,
     color: '#00d4ff',
     isHero: false 
   },
   { 
     name: 'Internal Audit AI', 
     icon: Search, 
-    orbit: 6.5, 
-    speed: 0.10, 
+    layer: 2, 
+    position: 2,
     color: '#00d4ff',
     isHero: false 
   },
   { 
     name: 'Claims Audit AI', 
     icon: FileCheck, 
-    orbit: 7, 
-    speed: 0.09, 
+    layer: 3, 
+    position: 0,
     color: '#00d4ff',
     isHero: false 
   },
   { 
     name: 'Customer Support AI', 
     icon: MessageCircle, 
-    orbit: 7.5, 
-    speed: 0.08, 
+    layer: 3, 
+    position: 1,
     color: '#a855f7',
     isHero: true 
   },
   { 
     name: 'Go-Do Voice/WhatsApp AI', 
     icon: Phone, 
-    orbit: 8, 
-    speed: 0.07, 
+    layer: 3, 
+    position: 2,
     color: '#a855f7',
     isHero: true 
   },
   { 
     name: 'High-Value Risk AI', 
     icon: Ship, 
-    orbit: 8.5, 
-    speed: 0.06, 
+    layer: 3, 
+    position: 3,
     color: '#a855f7',
     isHero: true 
   },
 ];
 
-// Central Orb Component
-function CentralOrb({ onClick }: { onClick: () => void }) {
+// Calculate node position in 3D space based on layer
+function getNodePosition(layer: number, position: number, totalInLayer: number): [number, number, number] {
+  const layerSpacing = 5;
+  const verticalSpacing = 2.5;
+  const x = (layer - 2) * layerSpacing; // Center around 0
+  const y = (position - (totalInLayer - 1) / 2) * verticalSpacing;
+  return [x, y, 0];
+}
+
+// Central Hub Component
+function CentralHub({ onClick }: { onClick: () => void }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
 
@@ -108,7 +117,6 @@ function CentralOrb({ onClick }: { onClick: () => void }) {
     const time = state.clock.getElapsedTime();
     if (meshRef.current) {
       meshRef.current.rotation.y = time * 0.1;
-      // Pulsing effect
       const scale = 1 + Math.sin(time * 2) * 0.05;
       meshRef.current.scale.set(scale, scale, scale);
     }
@@ -119,9 +127,8 @@ function CentralOrb({ onClick }: { onClick: () => void }) {
 
   return (
     <group onClick={onClick}>
-      {/* Main orb */}
       <mesh ref={meshRef}>
-        <sphereGeometry args={[1.5, 64, 64]} />
+        <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial
           color="#00d4ff"
           emissive="#00d4ff"
@@ -131,9 +138,8 @@ function CentralOrb({ onClick }: { onClick: () => void }) {
         />
       </mesh>
       
-      {/* Inner glow */}
       <mesh>
-        <sphereGeometry args={[1.7, 32, 32]} />
+        <sphereGeometry args={[1.2, 32, 32]} />
         <meshBasicMaterial
           color="#00d4ff"
           transparent
@@ -142,64 +148,50 @@ function CentralOrb({ onClick }: { onClick: () => void }) {
         />
       </mesh>
 
-      {/* Outer glow ring */}
-      <mesh>
-        <ringGeometry args={[2.2, 2.5, 64]} />
-        <meshBasicMaterial
-          color="#00d4ff"
-          transparent
-          opacity={0.2}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-
-      {/* Point light for illumination */}
       <pointLight ref={lightRef} color="#00d4ff" intensity={2} distance={20} />
     </group>
   );
 }
 
-// Orbit Ring Component
-function OrbitRing({ radius, color }: { radius: number; color: string }) {
+// Connection Line Component
+function ConnectionLine({ start, end, color }: { start: [number, number, number]; end: [number, number, number]; color: string }) {
   return (
-    <mesh rotation={[Math.PI / 2, 0, 0]}>
-      <ringGeometry args={[radius - 0.02, radius + 0.02, 128]} />
-      <meshBasicMaterial color={color} transparent opacity={0.15} side={THREE.DoubleSide} />
-    </mesh>
+    <Line
+      points={[start, end]}
+      color={color}
+      lineWidth={2}
+      transparent
+      opacity={0.3}
+    />
   );
 }
 
-// Satellite Node Component
-function SatelliteNode({ 
+// Neural Network Node Component
+function NeuralNode({ 
   satellite, 
   index, 
   onClick, 
-  isSelected 
+  isSelected,
+  position 
 }: { 
   satellite: typeof satellites[0]; 
   index: number; 
   onClick: () => void;
   isSelected: boolean;
+  position: [number, number, number];
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
+    
     if (groupRef.current) {
-      // Orbital motion
-      const angle = (time * satellite.speed) + (index * (Math.PI * 2) / satellites.length);
-      const x = Math.cos(angle) * satellite.orbit;
-      const z = Math.sin(angle) * satellite.orbit;
-      groupRef.current.position.set(x, 0, z);
-      
-      // Keep node facing camera (billboard effect)
       groupRef.current.lookAt(state.camera.position);
     }
     
-    // Gentle floating animation
     if (meshRef.current) {
-      meshRef.current.position.y = Math.sin(time * 2 + index) * 0.1;
+      meshRef.current.position.y = Math.sin(time * 2 + index) * 0.05;
     }
   });
 
@@ -209,7 +201,7 @@ function SatelliteNode({
   const Icon = satellite.icon;
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} position={position}>
       <mesh 
         ref={meshRef} 
         onClick={onClick}
@@ -296,16 +288,43 @@ function Scene({ onSatelliteClick, selectedIndex }: {
   onSatelliteClick: (index: number) => void;
   selectedIndex: number | null;
 }) {
+  // Group satellites by layer
+  const layerGroups: { [key: number]: typeof satellites } = {};
+  satellites.forEach(sat => {
+    if (!layerGroups[sat.layer]) layerGroups[sat.layer] = [];
+    layerGroups[sat.layer].push(sat);
+  });
+
+  // Calculate positions and connections
+  const nodePositions: { [key: number]: [number, number, number] } = {};
+  satellites.forEach((sat, idx) => {
+    const totalInLayer = layerGroups[sat.layer].length;
+    nodePositions[idx] = getNodePosition(sat.layer, sat.position, totalInLayer);
+  });
+
+  // Generate connections between adjacent layers
+  const connections: Array<{ start: [number, number, number]; end: [number, number, number]; color: string }> = [];
+  satellites.forEach((sat, idx) => {
+    const nextLayer = sat.layer + 1;
+    satellites.forEach((nextSat, nextIdx) => {
+      if (nextSat.layer === nextLayer) {
+        connections.push({
+          start: nodePositions[idx],
+          end: nodePositions[nextIdx],
+          color: sat.color
+        });
+      }
+    });
+  });
+
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 8, 15]} fov={50} />
+      <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={50} />
       <OrbitControls
-        enablePan={false}
+        enablePan={true}
         enableZoom={true}
-        minDistance={10}
-        maxDistance={25}
-        maxPolarAngle={Math.PI / 2}
-        minPolarAngle={Math.PI / 4}
+        minDistance={12}
+        maxDistance={30}
       />
 
       {/* Starfield */}
@@ -314,33 +333,35 @@ function Scene({ onSatelliteClick, selectedIndex }: {
       {/* Ambient lighting */}
       <ambientLight intensity={0.3} />
       
-      {/* Central orb */}
-      <CentralOrb onClick={() => onSatelliteClick(-1)} />
+      {/* Central hub */}
+      <CentralHub onClick={() => onSatelliteClick(-1)} />
 
-      {/* Orbit rings */}
-      {satellites.map((satellite, index) => (
-        <OrbitRing 
-          key={`ring-${index}`} 
-          radius={satellite.orbit} 
-          color={satellite.color} 
+      {/* Connection lines */}
+      {connections.map((conn, idx) => (
+        <ConnectionLine
+          key={`connection-${idx}`}
+          start={conn.start}
+          end={conn.end}
+          color={conn.color}
         />
       ))}
 
-      {/* Satellites */}
+      {/* Neural nodes */}
       {satellites.map((satellite, index) => (
-        <SatelliteNode
+        <NeuralNode
           key={index}
           satellite={satellite}
           index={index}
           onClick={() => onSatelliteClick(index)}
           isSelected={selectedIndex === index}
+          position={nodePositions[index]}
         />
       ))}
     </>
   );
 }
 
-// Main Solar System Component
+// Main Neural Network Component
 export default function SolarSystem({ 
   selectedSatellite, 
   onSatelliteClick 
