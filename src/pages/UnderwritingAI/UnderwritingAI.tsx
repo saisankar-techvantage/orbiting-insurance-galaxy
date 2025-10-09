@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import cosmicBg from "@/assets/cosmic-background.jpg";
+import { FaFileCsv, FaFilePdf } from "react-icons/fa";
 
 const UnderwritingAIPlatform = () => {
   const navigate = useNavigate();
@@ -68,17 +69,14 @@ const UnderwritingAIPlatform = () => {
 
   useEffect(() => {
     if (phase === "processing") {
-      setLogs([]);
-      let i = 0;
-      const interval = setInterval(() => {
-        setLogs((prev) => [...prev, aiLogs[i]]);
-        i++;
-        if (i === aiLogs.length) {
-          clearInterval(interval);
-          setTimeout(() => setPhase("result"), 800);
-        }
-      }, 800);
-      return () => clearInterval(interval);
+      const totalDuration = 3500 * 5 + 500; // processing duration
+      const timer = setTimeout(() => setPhase("loading"), totalDuration);
+      return () => clearTimeout(timer);
+    }
+
+    if (phase === "loading") {
+      const loadTimer = setTimeout(() => setPhase("result"), 2000); // loading screen for 2s
+      return () => clearTimeout(loadTimer);
     }
   }, [phase]);
 
@@ -165,7 +163,8 @@ const UnderwritingAIPlatform = () => {
                             whileHover={{ scale: 1.03 }}
                             className="p-2 bg-gray-50 border border-gray-200 rounded-lg cursor-grab hover:shadow-md flex items-center gap-2"
                           >
-                            📄 <span className="text-sm">{file}</span>
+                            <FaFilePdf className="text-red-500 text-lg" />
+                            <span className="text-sm  text-black">{file}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -233,28 +232,91 @@ const UnderwritingAIPlatform = () => {
               </motion.div>
             )}
 
+            {phase === "loading" && (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col items-center justify-center h-full text-cyan-700 p-8"
+              >
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "linear",
+                  }}
+                  className="w-14 h-14 border-4 border-cyan-400 border-t-transparent rounded-full mb-6"
+                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    repeatType: "reverse",
+                  }}
+                  className="text-lg font-semibold"
+                >
+                  Compiling AI Decision Results...
+                </motion.div>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 2 }}
+                  className="w-64 h-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-full mt-6 overflow-hidden"
+                />
+              </motion.div>
+            )}
+
             {phase === "processing" && (
               <motion.div
                 key="processing"
-                className="flex flex-col gap-3 h-full text-gray-700 p-8 w-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col h-full text-gray-700 p-8 w-full"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-                  <div className="font-semibold text-cyan-700">
+                  <div className="font-semibold text-cyan-700 text-lg">
                     AI Core Analyzing Inputs...
                   </div>
                 </div>
-                <div className="bg-gray-50 border border-gray-300 rounded-md p-4 font-mono text-xs flex-1 overflow-auto">
-                  {logs.map((l, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="text-cyan-700 mb-1"
-                    >
-                      {l}
-                    </motion.div>
+
+                {/* Processing Nodes */}
+                <div className="flex flex-col gap-6 overflow-auto">
+                  {[
+                    {
+                      title: "Customer Data Analysis",
+                      desc: "Extracting key demographic and behavior attributes...",
+                    },
+                    {
+                      title: "Financial Record Evaluation",
+                      desc: "Analyzing transactions and validating income statements...",
+                    },
+                    {
+                      title: "Behavioral Pattern Detection",
+                      desc: "Identifying claim frequency and anomaly behaviors...",
+                    },
+                    {
+                      title: "Underwriting Model Optimization",
+                      desc: "Applying predictive algorithms to estimate risk class...",
+                    },
+                    {
+                      title: "Generating Final AI Decision",
+                      desc: "Compiling premium adjustments and recommendation report...",
+                    },
+                  ].map((node, index) => (
+                    <ProcessingNode
+                      key={index}
+                      index={index}
+                      title={node.title}
+                      desc={node.desc}
+                      activeDelay={index * 3500} // each node runs after the previous one
+                    />
                   ))}
                 </div>
               </motion.div>
@@ -263,9 +325,19 @@ const UnderwritingAIPlatform = () => {
             {phase === "result" && (
               <motion.div
                 key="result"
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.97 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
                 className="h-full flex flex-col text-gray-800 p-6 overflow-auto"
               >
-                <div className="flex items-center justify-between mb-4">
+                {/* Header */}
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex items-center justify-between mb-4"
+                >
                   <div className="text-lg font-semibold text-cyan-700">
                     AI Underwriting Results
                   </div>
@@ -282,19 +354,37 @@ const UnderwritingAIPlatform = () => {
                   >
                     ↺ Restart
                   </button>
-                </div>
+                </motion.div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {Object.entries(sampleUser).map(([k, v]) => (
-                    <div
+                {/* Result Cards */}
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 1 },
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.05,
+                      },
+                    },
+                  }}
+                  className="grid grid-cols-2 gap-4"
+                >
+                  {Object.entries(sampleUser).map(([k, v], i) => (
+                    <motion.div
                       key={k}
-                      className="bg-gray-50 p-3 rounded-md border border-gray-200"
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      transition={{ duration: 0.5, delay: i * 0.02 }}
+                      className="bg-gray-50 p-3 rounded-md border border-gray-200 hover:shadow-md transition"
                     >
                       <div className="text-xs text-gray-500">{k}</div>
                       <div className="text-sm font-medium mt-1">{v}</div>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -305,3 +395,80 @@ const UnderwritingAIPlatform = () => {
 };
 
 export default UnderwritingAIPlatform;
+
+const ProcessingNode = ({ index, title, desc, activeDelay }) => {
+  const [progress, setProgress] = useState(0);
+  const [active, setActive] = useState(false);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const startTimer = setTimeout(() => setActive(true), activeDelay);
+    return () => clearTimeout(startTimer);
+  }, [activeDelay]);
+
+  useEffect(() => {
+    if (active) {
+      let p = 0;
+      const interval = setInterval(() => {
+        p += 5;
+        setProgress(p);
+        if (p >= 100) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [active]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.2 }}
+      className={`relative flex items-start gap-4 p-4 rounded-xl border ${
+        done
+          ? "border-cyan-400 bg-cyan-50/60"
+          : active
+          ? "border-cyan-300 bg-white"
+          : "border-gray-200 bg-gray-50"
+      } shadow-sm`}
+    >
+      {/* Node Circle */}
+      <motion.div
+        animate={
+          done
+            ? { scale: [1, 1.3, 1], backgroundColor: "#22d3ee" }
+            : active
+            ? { scale: [1, 1.2, 1], backgroundColor: "#06b6d4" }
+            : { backgroundColor: "#d1d5db" }
+        }
+        transition={{ repeat: active && !done ? Infinity : 0, duration: 1 }}
+        className={`w-6 h-6 rounded-full mt-1 ${
+          done ? "bg-cyan-400" : "bg-gray-300"
+        }`}
+      />
+
+      {/* Content */}
+      <div className="flex-1">
+        <div className="font-semibold text-cyan-700">{title}</div>
+        <div className="text-xs text-gray-500 mb-2">{desc}</div>
+
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+          <motion.div
+            className="h-2 bg-cyan-500 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+
+        {/* Status text */}
+        <div className="text-xs mt-1 text-right font-medium">
+          {done ? "✅ Completed" : active ? `${progress}%` : "Waiting..."}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
