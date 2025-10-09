@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import cosmicBg from "@/assets/cosmic-background.jpg";
 import { FaFileCsv, FaFilePdf } from "react-icons/fa";
+import { DownloadIcon, ListRestartIcon } from "lucide-react";
 
 const UnderwritingAIPlatform = () => {
   const navigate = useNavigate();
@@ -341,19 +342,44 @@ const UnderwritingAIPlatform = () => {
                   <div className="text-lg font-semibold text-cyan-700">
                     AI Underwriting Results
                   </div>
-                  <button
-                    onClick={() => {
-                      setSelectedFiles({
-                        customer: null,
-                        financial: null,
-                        behavior: null,
-                      });
-                      setPhase("upload");
-                    }}
-                    className="text-xs text-cyan-600 hover:text-cyan-500"
-                  >
-                    ↺ Restart
-                  </button>
+
+                  <div className="flex items-center gap-3">
+                    {/* Download Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        const blob = new Blob(
+                          [JSON.stringify(sampleUser, null, 2)],
+                          {
+                            type: "application/json",
+                          }
+                        );
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "AI_Underwriting_Results.json";
+                        link.click();
+                      }}
+                      className="text-xs px-3 py-1.5 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-500 transition"
+                    >
+                      <DownloadIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
+                    </motion.button>
+
+                    {/* Restart Button */}
+                    <button
+                      onClick={() => {
+                        setSelectedFiles({
+                          customer: null,
+                          financial: null,
+                          behavior: null,
+                        });
+                        setPhase("upload");
+                      }}
+                      className="text-xs text-cyan-600 hover:text-cyan-500"
+                    >
+                      <ListRestartIcon className="inline-block w-5 h-5" />
+                    </button>
+                  </div>
                 </motion.div>
 
                 {/* Result Cards */}
