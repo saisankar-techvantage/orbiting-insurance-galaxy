@@ -14,6 +14,7 @@ import {
   Phone, 
   Ship 
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Satellite data
 const satellites = [
@@ -348,8 +349,21 @@ export default function SolarSystem({
   selectedSatellite: number | null;
   onSatelliteClick: (index: number) => void;
 }) {
+
+  const navigate = useNavigate();
+  // const handleSatelliteClick = (index: number) => {
+  //   onSatelliteClick(index === -1 ? null : index);
+  // };
+
   const handleSatelliteClick = (index: number) => {
-    onSatelliteClick(index === -1 ? null : index);
+    const selected = satellites[index];
+    if (selected?.name === 'Underwriting AI') {
+      // Trigger transition before navigation
+      document.body.classList.add('page-transition');
+      setTimeout(() => navigate('/underwriting_ai'), 700); // delay for animation
+    } else {
+      onSatelliteClick(index === -1 ? null : index);
+    }
   };
 
   return (
