@@ -14,6 +14,7 @@ const UnderwritingAIPlatform = () => {
     financial: null,
     behavior: null,
   });
+  const [draggingFile, setDraggingFile] = useState(null);
 
   const aiLogs = [
     "Initializing AI reasoning module...",
@@ -70,17 +71,18 @@ const UnderwritingAIPlatform = () => {
 
   useEffect(() => {
     if (phase === "processing") {
-      const totalDuration = 3500 * 5 + 500; // processing duration
+      const totalDuration = 3500 * 5 + 500;
       const timer = setTimeout(() => setPhase("loading"), totalDuration);
       return () => clearTimeout(timer);
     }
 
     if (phase === "loading") {
-      const loadTimer = setTimeout(() => setPhase("result"), 2000); // loading screen for 2s
+      const loadTimer = setTimeout(() => setPhase("result"), 2000);
       return () => clearTimeout(loadTimer);
     }
   }, [phase]);
 
+  // --- Mouse-based Drag Handlers ---
   const handleDragStart = (e, file, type) => {
     e.dataTransfer.setData("file", JSON.stringify({ file, type }));
   };
@@ -92,6 +94,33 @@ const UnderwritingAIPlatform = () => {
   };
 
   const handleDragOver = (e) => e.preventDefault();
+
+  // --- Touch-based Drag Simulation ---
+  const handleTouchStart = (e, file, type) => {
+    setDraggingFile({ file, type });
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!draggingFile) return;
+
+    const dropZone = document.elementFromPoint(
+      e.changedTouches[0].clientX,
+      e.changedTouches[0].clientY
+    );
+
+    if (dropZone && dropZone.id === "ai-drop-zone") {
+      setSelectedFiles((prev) => ({
+        ...prev,
+        [draggingFile.type]: draggingFile.file,
+      }));
+    }
+
+    setDraggingFile(null);
+  };
 
   const startAnalysis = () => {
     setPhase("processing");
@@ -118,7 +147,7 @@ const UnderwritingAIPlatform = () => {
         <div className="flex items-center justify-between bg-gradient-to-r from-gray-100 to-gray-200 px-5 py-2 border-b border-gray-300">
           <div className="flex items-center gap-2">
             <div
-              className="w-3 h-3 bg-red-500 rounded-full"
+              className="w-3 h-3 bg-red-500 rounded-full cursor-pointer"
               onClick={() => navigate(-1)}
             />
             <div className="w-3 h-3 bg-yellow-400 rounded-full" />
@@ -132,6 +161,7 @@ const UnderwritingAIPlatform = () => {
         {/* Body */}
         <div className="flex-1 flex flex-col items-center justify-center relative px-6">
           <AnimatePresence mode="wait">
+            {/* --- Upload Phase --- */}
             {phase === "upload" && (
               <motion.div
                 key="upload"
@@ -140,8 +170,8 @@ const UnderwritingAIPlatform = () => {
                 exit={{ opacity: 0 }}
                 className="w-full flex flex-col items-center"
               >
-                {/* Top Panels */}
-                <div className="flex justify-center gap-6 mb-16">
+                {/* Panels */}
+                <div className="flex justify-center gap-6 mb-16 flex-wrap">
                   {panels.map((panel, i) => (
                     <motion.div
                       key={panel.key}
@@ -161,11 +191,20 @@ const UnderwritingAIPlatform = () => {
                             onDragStart={(e) =>
                               handleDragStart(e, file, panel.key)
                             }
+                            onTouchStart={(e) =>
+                              handleTouchStart(e, file, panel.key)
+                            }
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
                             whileHover={{ scale: 1.03 }}
-                            className="p-2 bg-gray-50 border border-gray-200 rounded-lg cursor-grab hover:shadow-md flex items-center gap-2"
+                            className={`p-2 bg-gray-50 border border-gray-200 rounded-lg cursor-grab hover:shadow-md flex items-center gap-2 transition ${
+                              draggingFile?.file === file
+                                ? "opacity-70 scale-105"
+                                : ""
+                            }`}
                           >
                             <FaFilePdf className="text-red-500 text-lg" />
-                            <span className="text-sm  text-black">{file}</span>
+                            <span className="text-sm text-black">{file}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -173,11 +212,12 @@ const UnderwritingAIPlatform = () => {
                   ))}
                 </div>
 
-                {/* Connecting Glow Lines */}
+                {/* Glow Line */}
                 <div className="absolute top-[38%] w-1/2 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent blur-[2px]" />
 
                 {/* AI Core */}
                 <motion.div
+                  id="ai-drop-zone"
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                   className={`relative mt-10 flex flex-col items-center justify-center w-80 h-64 rounded-2xl border-2 border-dashed transition-all ${
@@ -186,7 +226,6 @@ const UnderwritingAIPlatform = () => {
                       : "border-gray-300 bg-gray-100"
                   } shadow-lg`}
                 >
-                  {/* Glow Effect */}
                   <motion.div
                     animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
                     transition={{
@@ -196,7 +235,6 @@ const UnderwritingAIPlatform = () => {
                     }}
                     className="absolute w-64 h-64 rounded-full bg-cyan-300/30 blur-3xl"
                   />
-
                   <div className="z-10 text-center">
                     <div className="text-xl font-semibold text-cyan-700 mb-3">
                       AI Core System
@@ -233,6 +271,7 @@ const UnderwritingAIPlatform = () => {
               </motion.div>
             )}
 
+            {/* --- Loading Phase --- */}
             {phase === "loading" && (
               <motion.div
                 key="loading"
@@ -272,6 +311,7 @@ const UnderwritingAIPlatform = () => {
               </motion.div>
             )}
 
+            {/* --- Processing Phase --- */}
             {phase === "processing" && (
               <motion.div
                 key="processing"
@@ -287,7 +327,6 @@ const UnderwritingAIPlatform = () => {
                   </div>
                 </div>
 
-                {/* Processing Nodes */}
                 <div className="flex flex-col gap-6 overflow-auto">
                   {[
                     {
@@ -316,13 +355,14 @@ const UnderwritingAIPlatform = () => {
                       index={index}
                       title={node.title}
                       desc={node.desc}
-                      activeDelay={index * 3500} // each node runs after the previous one
+                      activeDelay={index * 3500}
                     />
                   ))}
                 </div>
               </motion.div>
             )}
 
+            {/* --- Result Phase --- */}
             {phase === "result" && (
               <motion.div
                 key="result"
@@ -332,7 +372,6 @@ const UnderwritingAIPlatform = () => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="h-full flex flex-col text-gray-800 p-6 overflow-auto"
               >
-                {/* Header */}
                 <motion.div
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -344,7 +383,6 @@ const UnderwritingAIPlatform = () => {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    {/* Download Button */}
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -365,7 +403,6 @@ const UnderwritingAIPlatform = () => {
                       <DownloadIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
                     </motion.button>
 
-                    {/* Restart Button */}
                     <button
                       onClick={() => {
                         setSelectedFiles({
@@ -382,17 +419,12 @@ const UnderwritingAIPlatform = () => {
                   </div>
                 </motion.div>
 
-                {/* Result Cards */}
                 <motion.div
                   initial="hidden"
                   animate="visible"
                   variants={{
                     hidden: { opacity: 1 },
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.05,
-                      },
-                    },
+                    visible: { transition: { staggerChildren: 0.05 } },
                   }}
                   className="grid grid-cols-2 gap-4"
                 >
@@ -422,6 +454,7 @@ const UnderwritingAIPlatform = () => {
 
 export default UnderwritingAIPlatform;
 
+// --- Processing Node Component ---
 const ProcessingNode = ({ index, title, desc, activeDelay }) => {
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState(false);
@@ -460,7 +493,6 @@ const ProcessingNode = ({ index, title, desc, activeDelay }) => {
           : "border-gray-200 bg-gray-50"
       } shadow-sm`}
     >
-      {/* Node Circle */}
       <motion.div
         animate={
           done
@@ -475,25 +507,17 @@ const ProcessingNode = ({ index, title, desc, activeDelay }) => {
         }`}
       />
 
-      {/* Content */}
       <div className="flex-1">
         <div className="font-semibold text-cyan-700">{title}</div>
-        <div className="text-xs text-gray-500 mb-2">{desc}</div>
-
-        {/* Progress Bar */}
-        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+        <div className="text-xs text-gray-600">{desc}</div>
+        {active && (
           <motion.div
-            className="h-2 bg-cyan-500 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.1 }}
+            className="h-1 bg-cyan-400 rounded-full mt-2"
           />
-        </div>
-
-        {/* Status text */}
-        <div className="text-xs mt-1 text-right font-medium">
-          {done ? "✅ Completed" : active ? `${progress}%` : "Waiting..."}
-        </div>
+        )}
       </div>
     </motion.div>
   );
