@@ -97,10 +97,13 @@ const UnderwritingAIPlatform = () => {
 
   // --- Touch-based Drag Simulation ---
   const handleTouchStart = (e, file, type) => {
+    console.log("e", e);
+    console.log("Touch start", file, type);
     setDraggingFile({ file, type });
   };
 
   const handleTouchMove = (e) => {
+    console.log("Touch move", e);
     e.preventDefault();
   };
 
@@ -128,7 +131,7 @@ const UnderwritingAIPlatform = () => {
 
   return (
     <div
-      className="relative w-full h-screen flex items-center justify-center overflow-hidden"
+      className="relative w-full h-screen flex items-center justify-center"
       style={{
         backgroundImage: `url(${cosmicBg})`,
         backgroundSize: "cover",
@@ -144,7 +147,10 @@ const UnderwritingAIPlatform = () => {
         className="relative z-10 w-11/12 max-w-6xl h-[90vh] rounded-2xl overflow-hidden bg-white/90 shadow-[0_0_50px_rgba(0,0,0,0.25)] border border-gray-200 flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between bg-gradient-to-r from-gray-100 to-gray-200 px-5 py-2 border-b border-gray-300">
+        <div
+          className="flex items-center justify-between bg-gradient-to-r from-gray-100 to-gray-200 px-5 py-2 
+               border-b border-gray-300 sticky top-0 z-20"
+        >
           <div className="flex items-center gap-2">
             <div
               className="w-3 h-3 bg-red-500 rounded-full cursor-pointer"
@@ -159,7 +165,7 @@ const UnderwritingAIPlatform = () => {
         </div>
 
         {/* Body */}
-        <div className="flex-1 flex flex-col items-center justify-center relative px-6">
+        <div className="flex-1 flex flex-col relative px-6 overflow-y-auto py-10">
           <AnimatePresence mode="wait">
             {/* --- Upload Phase --- */}
             {phase === "upload" && (
@@ -318,7 +324,7 @@ const UnderwritingAIPlatform = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex flex-col h-full text-gray-700 p-8 w-full"
+                className="flex flex-col h-full text-gray-700 w-full py-10"
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
@@ -327,7 +333,7 @@ const UnderwritingAIPlatform = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-6 overflow-auto">
+                <div className="flex flex-col gap-6">
                   {[
                     {
                       title: "Customer Data Analysis",
@@ -370,13 +376,13 @@ const UnderwritingAIPlatform = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.97 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="h-full flex flex-col text-gray-800 p-6 overflow-auto"
+                className="h-full flex flex-col text-gray-800 p-6"
               >
                 <motion.div
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="flex items-center justify-between mb-4"
+                  className="flex items-center justify-between mb-4 top-0 backdrop-blur z-10 py-2"
                 >
                   <div className="text-lg font-semibold text-cyan-700">
                     AI Underwriting Results
