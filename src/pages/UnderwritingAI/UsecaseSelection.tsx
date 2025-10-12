@@ -66,23 +66,23 @@ const UsecaseGrid: React.FC<UsecaseGridProps> = ({ setUsecase }) => {
         return (
           <motion.div
             key={usecase.key}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             whileHover={{
-              y: -6,
-              boxShadow: "0 0 40px rgba(34,211,238,0.35)",
+              y: -4,
+              boxShadow: "0 12px 25px rgba(34,211,238,0.2)",
             }}
             onClick={() => usecase.active && setUsecase(usecase.key)}
-            className={`relative group rounded-2xl cursor-pointer overflow-hidden border backdrop-blur-md transition-all duration-300 ${
+            className={`relative group rounded-2xl cursor-pointer overflow-hidden border transition-all duration-300 bg-white ${
               usecase.active
-                ? "border-cyan-400/60 hover:border-cyan-400 bg-gradient-to-br from-[#0e1729] to-[#0c1221]"
-                : "border-gray-700 bg-[#0a101e] opacity-70 hover:opacity-80"
+                ? "border-cyan-400 shadow-lg"
+                : "border-gray-200 hover:shadow-md"
             }`}
           >
-            {/* Top Glow Effect */}
+            {/* Top Accent */}
             {usecase.active && (
-              <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-cyan-400 rounded-t-md" />
             )}
 
             <div className="relative p-6 flex flex-col h-full justify-between z-10">
@@ -90,25 +90,23 @@ const UsecaseGrid: React.FC<UsecaseGridProps> = ({ setUsecase }) => {
               <div>
                 <div className="flex items-center mb-4">
                   <div
-                    className={`p-3 rounded-xl transition-all duration-300 ${
+                    className={`p-3 rounded-xl transition-all duration-300 flex items-center justify-center ${
                       usecase.active
-                        ? "bg-cyan-900/40 text-cyan-400 group-hover:bg-cyan-800/60"
-                        : "bg-gray-800 text-gray-500"
+                        ? "bg-cyan-50 text-cyan-500"
+                        : "bg-gray-100 text-gray-400"
                     }`}
                   >
                     <Icon size={28} />
                   </div>
                   <h2
                     className={`text-lg font-semibold ml-3 transition-colors duration-300 ${
-                      usecase.active
-                        ? "text-white group-hover:text-cyan-400"
-                        : "text-gray-400"
+                      usecase.active ? "text-gray-900" : "text-gray-600"
                     }`}
                   >
                     {usecase.title}
                   </h2>
                 </div>
-                <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">
+                <p className="text-gray-500 text-sm leading-relaxed line-clamp-3">
                   {usecase.description}
                 </p>
               </div>
@@ -117,13 +115,13 @@ const UsecaseGrid: React.FC<UsecaseGridProps> = ({ setUsecase }) => {
               <div className="flex justify-end mt-6">
                 {usecase.active ? (
                   <motion.div
-                    whileHover={{ x: 4 }}
-                    className="flex items-center text-cyan-400 text-sm font-medium"
+                    whileHover={{ x: 3 }}
+                    className="flex items-center text-cyan-500 text-sm font-medium"
                   >
                     Explore <ArrowRight size={16} className="ml-1" />
                   </motion.div>
                 ) : (
-                  <div className="text-gray-600 text-sm italic">
+                  <div className="text-gray-400 text-sm italic">
                     Coming Soon
                   </div>
                 )}

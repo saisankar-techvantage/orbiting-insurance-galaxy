@@ -27,10 +27,15 @@ export default function ProcessingPhase({ setPhase }) {
   // Auto-progress each step
   useEffect(() => {
     if (currentStep === 5) return;
+
+    // Stop auto progression at the Quote & Payment step (index 3)
+    if (currentStep === 4) return;
+
     if (currentStep < steps.length) {
       const timer = setTimeout(() => setCurrentStep((s) => s + 1), 5500);
       return () => clearTimeout(timer);
     }
+
     // After AML → show finalizing screen first, then result
     if (currentStep === steps.length) {
       setIsFinalizing(true);
@@ -42,7 +47,7 @@ export default function ProcessingPhase({ setPhase }) {
   }, [currentStep, steps.length, setPhase]);
 
   const manualStepCompletion = () => {
-    return;
+    //return;
     if (currentStep < steps.length) {
       setCurrentStep((s) => s + 1);
     }
@@ -62,10 +67,10 @@ export default function ProcessingPhase({ setPhase }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center w-full h-full px-8 py-10 text-white"
+      className="flex flex-col items-center justify-start w-full h-full px-8 pb-10 text-white overflow-y-auto"
     >
       {/* --- Header Progress Bar --- */}
-      <div className="w-full max-w-5xl mb-12">
+      <div className="w-full max-w-5xl mb-12 sticky top-0 z-20 bg-[#0c152b] py-4 rounded-2xl border border-gray-700 shadow-md">
         <div className="flex items-center justify-between relative">
           {steps.map((step, i) => {
             const Icon = step.icon;
@@ -157,7 +162,7 @@ export default function ProcessingPhase({ setPhase }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.6 }}
-            className="w-full max-w-3xl border border-gray-700 rounded-2xl shadow-lg p-10 text-center"
+            //className="w-full max-w-3xl border border-gray-700 rounded-2xl shadow-lg p-10 text-center"
           >
             <ProcessStageContent
               stepKey={steps[currentStep]?.key}
