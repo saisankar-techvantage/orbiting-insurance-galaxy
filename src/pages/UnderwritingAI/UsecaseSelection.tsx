@@ -27,7 +27,7 @@ export const usecases = [
     title: "Health Insurance",
     description: "AI-driven claim and policy assessment for health cases.",
     icon: HeartPulse,
-    active: false,
+    active: true,
   },
   {
     key: "motor",

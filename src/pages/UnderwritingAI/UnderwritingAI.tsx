@@ -11,6 +11,8 @@ import LoadingPhase from "./LoadingPhase";
 import ProcessingPhase from "./ProcessingPhase";
 import ResultPhase from "./ResultPhase";
 import UsecaseSelection, { usecases } from "./UsecaseSelection";
+import UploadPhaseHealth from "./UploadPhaseHealth";
+import ProcessingPhaseHealth from "./ProcessingPhaseHealth";
 
 const UnderwritingAIPlatform = () => {
   const [phase, setPhase] = useState("upload");
@@ -20,6 +22,11 @@ const UnderwritingAIPlatform = () => {
     behavior: null,
   });
   const [selectedUsecase, setSelectedUsecase] = useState<string>();
+  const [selectedFilesHealth, setSelectedFilesHealth] = useState({
+    financial: null,
+    medical: null,
+    lab: null,
+  });
 
   // useEffect(() => {
   //   if (phase === "processing") {
@@ -77,6 +84,36 @@ const UnderwritingAIPlatform = () => {
           {phase === "result" && (
             <ResultPhase
               setSelectedFiles={setSelectedFiles}
+              setPhase={setPhase}
+            />
+          )}
+        </AnimatePresence>
+      )}
+
+      {/* Health Insurance */}
+      {selectedUsecase && selectedUsecase == "health" && (
+        <AnimatePresence mode="wait">
+          {/* --- Upload Phase --- */}
+          {phase === "upload" && (
+            <UploadPhaseHealth
+              selectedFiles={selectedFilesHealth}
+              setSelectedFiles={setSelectedFilesHealth}
+              setPhase={setPhase}
+            />
+          )}
+
+          {/* --- Loading Phase --- */}
+          {phase === "loading" && (
+            <LoadingPhase phase={phase} setPhase={setPhase} />
+          )}
+
+          {/* --- Processing Phase --- */}
+          {phase === "processing" && <ProcessingPhaseHealth setPhase={setPhase} />}
+
+          {/* --- Result Phase --- */}
+          {phase === "result" && (
+            <ResultPhase
+              setSelectedFiles={setSelectedFilesHealth}
               setPhase={setPhase}
             />
           )}
