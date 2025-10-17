@@ -22,15 +22,15 @@ import auditAnim from "@/assets/lottie/audit.json";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function ProcessStageContentHealth({ stepKey, manualStepCompletion }) {
+export default function ProcessStageContentMarine({ stepKey, manualStepCompletion }) {
   const [showAudit, setShowAudit] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
 
   const auditEvents = [
-    { time: "10:12 AM", event: "Document extraction completed" },
-    { time: "10:14 AM", event: "Rule-based underwriting applied" },
-    { time: "10:15 AM", event: "Reinsurer rating service call" },
-    { time: "10:17 AM", event: "Quote calculation complete" },
+    { time: "10:12 AM", event: "Marine document extraction completed" },
+    { time: "10:14 AM", event: "Cargo data validation applied" },
+    { time: "10:15 AM", event: "Route risk assessment complete" },
+    { time: "10:17 AM", event: "Marine premium calculation complete" },
     { time: "10:18 AM", event: "Payment validation successful" },
     { time: "10:20 AM", event: "AML screening and resolution complete" },
     { time: "10:22 AM", event: "Decision issued: Approved" },
@@ -85,13 +85,13 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
     );
   };
 
-  const [step, setStep] = useState(4); // start from Tap 4
+  const [step, setStep] = useState(4);
   const [finalPremium, setFinalPremium] = useState(null);
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  const basePremium = 22000;
-  const loadPercent = 15;
+  const basePremium = 112500;
+  const loadPercent = 0;
 
   const calculatePremium = () => {
     return Math.round(basePremium * (1 + loadPercent / 100));
@@ -106,8 +106,8 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
   };
 
   switch (stepKey) {
-    // 🅰️ PROPOSAL INTAKE
-    case "proposal":
+    // 🅰️ DATA STRUCTURING
+    case "data-structuring":
       return (
         <motion.div
           {...fade}
@@ -117,7 +117,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
           <div className="flex items-center ">
             <FileText className="text-cyan-500" size={26} />
             <h3 className="text-2xl font-semibold text-cyan-600">
-              Proposal Intake
+              Marine Data Structuring
             </h3>
           </div>
           {/* Progress + Footer */}
@@ -135,8 +135,8 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
               />
             </div>
             <p className="text-gray-500 text-sm italic text-center">
-              Zen Pilot ingests proposal & medical data; normalizes features for
-              underwriting.
+              Zen Pilot ingests marine documents & cargo data; normalizes features for
+              marine underwriting.
             </p>
           </div>
 
@@ -153,24 +153,24 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
                 <UserCircle2 size={48} className="text-cyan-500" />
                 <div>
                   <p className="text-lg font-semibold text-gray-800">
-                    Sarah Johnson
+                    Ocean Freight Ltd
                   </p>
-                  <p className="text-sm text-gray-500">Female, 38</p>
+                  <p className="text-sm text-gray-500">Marine Cargo Insurance</p>
                 </div>
               </div>
 
               <div className="space-y-2 text-sm text-gray-700">
                 <p>
-                  Product:{" "}
-                  <span className="font-medium text-gray-900">Health Insurance</span>
+                  Cargo Type:{" "}
+                  <span className="font-medium text-gray-900">Electronics</span>
                 </p>
                 <p>
-                  Coverage:{" "}
-                  <span className="font-medium text-gray-900">₹5,00,000</span>
+                  Cargo Value:{" "}
+                  <span className="font-medium text-gray-900">₹45,00,000</span>
                 </p>
                 <p>
-                  Family Size:{" "}
-                  <span className="font-medium text-gray-900">4 Members</span>
+                  Route:{" "}
+                  <span className="font-medium text-gray-900">Mumbai → Singapore</span>
                 </p>
               </div>
             </motion.div>
@@ -184,91 +184,49 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
             >
               <div className="flex items-center justify-between border-b pb-2">
                 <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                  <FileText className="text-cyan-500" size={20} /> Health Document Tray
+                  <FileText className="text-cyan-500" size={20} /> Marine Document Tray
                 </h4>
                 <span className="text-xs text-gray-500">Auto Extract Mode</span>
               </div>
 
               {/* Animation + Extraction Info */}
               <div className="grid sm:grid-cols-2 gap-4 items-center mt-4">
-                {/* KYC Document */}
+                {/* Bill of Lading */}
                 <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm relative overflow-hidden hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 font-medium text-gray-800">
-                      <FileText size={18} className="text-cyan-500" /> KYC
-                      Document
+                      <FileText size={18} className="text-cyan-500" /> Bill of
+                      Lading
                     </span>
-                    {/* <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                      PDF
-                    </span> */}
                   </div>
-                  {/* <div className="text-sm text-gray-600">
-                    <p>
-                      ID Type:{" "}
-                      <span className="font-medium text-gray-800">Aadhaar</span>
-                    </p>
-                    <p>
-                      Verification:{" "}
-                      <span className="text-green-600 font-medium">
-                        Verified
-                      </span>
-                    </p>
-                    <p>
-                      Issue Date:{" "}
-                      <span className="font-medium text-gray-700">
-                        12 Mar 2020
-                      </span>
-                    </p>
-                  </div> */}
                 </div>
 
-                {/* Medical Report */}
+                {/* Invoice Document */}
                 <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm relative overflow-hidden hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 font-medium text-gray-800">
-                      <HeartPulse size={18} className="text-pink-500" /> Medical
-                      Report
+                      <FileText size={18} className="text-pink-500" /> Invoice
+                      Document
                     </span>
-                    {/* <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                      Lab Report
-                    </span> */}
                   </div>
-                  {/* <div className="text-sm text-gray-600">
-                    <p>
-                      Lab:{" "}
-                      <span className="font-medium text-gray-800">
-                        Apollo Diagnostics
-                      </span>
-                    </p>
-                    <p>
-                      Report Date:{" "}
-                      <span className="font-medium text-gray-700">
-                        24 Sep 2025
-                      </span>
-                    </p>
-                    <p>
-                      Status:{" "}
-                      <span className="text-blue-600 font-medium">Ready</span>
-                    </p>
-                  </div> */}
                 </div>
 
                 <div className="space-y-1 text-sm text-gray-700 leading-relaxed">
                   <p>
-                    Age: <TypeWriter text="38" startDelay={0} />
+                    Cargo Value: <TypeWriter text="₹45,00,000" startDelay={0} />
                   </p>
                   <p>
-                    Condition: <TypeWriter text="Hypertension" startDelay={1000} />
+                    Route: <TypeWriter text="Mumbai → Singapore" startDelay={1000} />
                   </p>
                   <p>
-                    BP: <TypeWriter text="140/90" startDelay={2000} />
+                    Vessel: <TypeWriter text="MV Ocean Star" startDelay={2000} />
                   </p>
                   <p>
-                    Duration: <TypeWriter text="2 years" startDelay={3000} />
+                    Transit Days: <TypeWriter text="12 days" startDelay={3000} />
                   </p>
                   <p>
-                    Medication:{" "}
-                    <TypeWriter text="Amlodipine" startDelay={4000} />
+                    Cargo Type:{" "}
+                    <TypeWriter text="Electronics" startDelay={4000} />
                   </p>
                 </div>
               </div>
@@ -277,17 +235,17 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
         </motion.div>
       );
 
-    // 🅱️ MEDICAL
-    case "medical":
+    // 🅱️ DATA EXTRACTION
+    case "data-extraction":
       return (
         <motion.div {...fade} className="text-center space-y-4">
           <h3 className="text-2xl font-semibold text-blue-400 flex items-center justify-center gap-2">
             <HeartPulse className="w-6 h-6" />
-            Medical Data Extraction
+            Marine Data Extraction
           </h3>
 
           <p className="text-gray-400 text-sm mb-2">
-            Extracting applicant’s medical conditions...
+            Extracting cargo and shipment information...
           </p>
 
           {/* 🧬 Animated Extraction Icons */}
@@ -343,110 +301,61 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
               ))}
             </div>
             <p className="text-gray-400 text-xs italic">
-              Scanning health declarations, lab reports, and condition
-              summaries...
+              Scanning bills of lading, invoices, and cargo documentation...
             </p>
           </motion.div>
 
-          {/* 🩺 Info Text */}
-          <p className="text-gray-400 text-sm italic">
-            “The system automatically identifies relevant medical conditions to
-            streamline underwriting decisions.”
-          </p>
-        </motion.div>
-      );
-
-    // 🅱️ ELIGIBILITY
-    case "eligibility":
-      return (
-        <motion.div {...fade} className="text-center space-y-4">
-          <h3 className="text-2xl font-semibold text-green-400">
-            U/W Eligibility Check
-          </h3>
-          <p className="text-gray-400 text-sm mb-2">
-            Running U/W Eligibility Rules...
-          </p>
-
-          {/* ✅ Animated Check Icons */}
-          <div className="flex justify-center gap-4">
-            {[1, 2, 3].map((i) => (
-              <motion.div
-                key={i}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: i * 1, type: "spring" }}
-              >
-                <CheckCircle size={36} className="text-green-400" />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ✅ Status Message */}
-          {/* ✅ Status Message */}
+          {/* Marine Extraction Results */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              delay: 3, // wait until all 3 checks are animated (0 + 1 + 2 sec)
-              duration: 0.5,
-              type: "spring",
-            }}
-            className="text-green-400 font-semibold mt-2"
+            transition={{ delay: 3, type: "spring" }}
+            className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 max-w-md mx-auto"
           >
-            Policy Rules Passed ✅
-          </motion.div>
-
-          {/* ⚙️ Condition Checking Loader */}
-          <motion.div
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 0 }}
-            transition={{ delay: 3, duration: 0.5, ease: "easeInOut" }} // hide after 3s
-            className="flex flex-col items-center justify-center mt-3 space-y-2"
-          >
-            <div className="flex gap-2">
-              {[0, 0.2, 0.4].map((delay, index) => (
-                <motion.div
-                  key={index}
-                  className="w-2.5 h-2.5 bg-green-400 rounded-full"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 0.6,
-                    delay,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
+            <h4 className="text-lg font-semibold text-blue-700 mb-3">Extraction Findings</h4>
+            <div className="space-y-2 text-sm text-blue-800">
+              <div className="flex justify-between">
+                <span>Insurance Rate:</span>
+                <span className="font-medium">2.5%</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Cargo Value:</span>
+                <span className="font-medium">₹45,00,000</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Voyage Route:</span>
+                <span className="font-medium">Mumbai → Singapore</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Cargo Type:</span>
+                <span className="font-medium">Electronics</span>
+              </div>
             </div>
-            <p className="text-gray-400 text-xs italic">
-              Checking underwriting conditions...
-            </p>
           </motion.div>
 
-          {/* 📝 Info Text */}
+          {/* 🚢 Info Text */}
           <p className="text-gray-400 text-sm italic">
-            “Policy-level rules evaluated first to avoid unnecessary reinsurer
-            calls.”
+            "The system automatically extracts cargo details, routes, and values to streamline marine underwriting decisions."
           </p>
         </motion.div>
       );
 
-    // 🅲 RISK CLASSIFICATION
-    case "risk-classification":
+    // 🅲 DATA FORMATTING
+    case "data-formatting":
       return (
         <motion.div {...fade} className="text-center space-y-4">
           <h3 className="text-2xl font-semibold text-purple-400 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-6 h-6" />
-            Risk Classification
+            <FileJson className="w-6 h-6" />
+            Data Formatting
           </h3>
 
           <p className="text-gray-400 text-sm mb-2">
-            Analyzing risk profile and assigning classification...
+            Standardizing marine data formats...
           </p>
 
-          {/* 🎯 Animated Risk Icons */}
+          {/* 🎯 Animated Formatting Icons */}
           <div className="flex justify-center gap-6 relative w-full h-10">
-            {[ShieldCheck, UserCircle2].map((Icon, i) => (
+            {[FileJson, FileText].map((Icon, i) => (
               <motion.div
                 key={i}
                 className="absolute"
@@ -471,7 +380,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
             transition={{ repeat: Infinity, duration: 1.2 }}
             className="text-purple-400 font-semibold mt-2"
           >
-            Classification in Progress...
+            Formatting in Progress...
           </motion.div>
 
           {/* 🌀 Loader Animation */}
@@ -497,119 +406,134 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
               ))}
             </div>
             <p className="text-gray-400 text-xs italic">
-              Evaluating medical history, lifestyle factors, and risk indicators...
+              Converting documents to standardized marine insurance format...
             </p>
-          </motion.div>
-
-          {/* Risk Class Result */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 3, type: "spring" }}
-            className="mt-6"
-          >
-            {(() => {
-              const riskClasses = [
-                { name: "Bronze", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
-                { name: "Silver", color: "text-gray-600", bg: "bg-gray-50", border: "border-gray-200" },
-                { name: "Gold", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200" },
-                { name: "Platinum", color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-200" }
-              ];
-              const randomClass = riskClasses[Math.floor(Math.random() * riskClasses.length)];
-              
-              return (
-                <div className={`inline-block px-6 py-3 rounded-xl ${randomClass.bg} ${randomClass.border} border-2 shadow-md`}>
-                  <span className={`text-xl font-bold ${randomClass.color}`}>
-                    Risk Class: {randomClass.name}
-                  </span>
-                </div>
-              );
-            })()}
           </motion.div>
 
           {/* 📝 Info Text */}
           <p className="text-gray-400 text-sm italic">
-            "Risk classification determines pricing tier and underwriting requirements."
+            "Data is standardized to ensure consistent processing across all marine insurance workflows."
           </p>
         </motion.div>
       );
 
-    // 🅳 REINSURER
-    case "reinsurer":
+    // 🅳 ELIGIBILITY
+    case "eligibility":
       return (
-        <motion.div {...fade} className="justify-start">
-          {/* Header */}
-          <h3 className="text-2xl font-semibold text-amber-400 flex mb-4 gap-2">
-            Reinsurer Rating
+        <motion.div {...fade} className="text-center space-y-4">
+          <h3 className="text-2xl font-semibold text-green-400">
+            U/W Eligibility Check
           </h3>
-          <div className="flex flex-col md:flex-row justify-center items-start gap-6 w-full max-w-4xl mx-auto">
-            {/* Left Column: API Request + Animation */}
-            <div className="flex flex-col gap-4 w-full md:w-1/2">
-              {/* API Request Panel */}
-              <div className="bg-[#1a1c2a] rounded-xl shadow-md border border-gray-700 w-full text-left overflow-hidden">
-                <div className="bg-[#2a2c3f] px-4 py-2 flex justify-between items-center border-b border-gray-600">
-                  <span className="text-green-400 font-mono font-semibold">
-                    POST
-                  </span>
-                  <span className="text-gray-300 font-mono">
-                    {"/api/reinsurer/lookup"}
-                  </span>
-                </div>
-                <pre className="p-4 text-sm text-green-400 font-mono">
-                  {`{
-        "age": 45,
-        "sum_assured": "50L",
-        "bmi": 29.3,
-        "medical_class": "II",
-        "smoker": false
-      }`}
-                </pre>
-              </div>
+          <p className="text-gray-400 text-sm mb-2">
+            Running Marine U/W Eligibility Rules...
+          </p>
 
-              {/* API Call Animation */}
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-gray-400 text-sm italic">
-                  Calling reinsurer API...
-                </p>
-                <Lottie animationData={apiAnim} loop style={{ height: 80 }} />
-              </div>
-            </div>
-
-            {/* Right Column: Response + Outcome */}
-            <div className="flex flex-col gap-4 w-full md:w-1/2 items-center">
-              {/* Streaming Response */}
+          {/* ✅ Animated Check Icons */}
+          <div className="flex justify-center gap-4">
+            {[1, 2, 3].map((i) => (
               <motion.div
-                className="bg-[#1a223a] p-4 rounded-xl border border-gray-700 w-full text-sm text-gray-300 shadow-lg font-mono"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <TypeWriterPlain
-                  text={`{ "load": "15%", "risk_class": "Substandard B" }`}
-                />
-              </motion.div>
-
-              {/* Outcome Badge */}
-              <motion.div
-                className="bg-[#2e2b1f] inline-block px-4 py-2 rounded-full text-amber-300 font-semibold shadow-md"
+                key={i}
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 1.5, type: "spring", stiffness: 100 }}
+                transition={{ delay: i * 1, type: "spring" }}
               >
-                Substandard B — +15% Load
+                <CheckCircle size={36} className="text-green-400" />
               </motion.div>
-
-              {/* Narration */}
-              <p className="text-gray-400 text-sm italic mt-2 text-center">
-                “Live lookup to reinsurer logic/table/calculator via API; result
-                feeds into pricing.”
-              </p>
-            </div>
+            ))}
           </div>
+
+          {/* ✅ Status Message */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              delay: 3,
+              duration: 0.5,
+              type: "spring",
+            }}
+            className="text-green-400 font-semibold mt-2"
+          >
+            Marine Rules Passed ✅
+          </motion.div>
+
+          {/* ⚙️ Condition Checking Loader */}
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            transition={{ delay: 3, duration: 0.5, ease: "easeInOut" }}
+            className="flex flex-col items-center justify-center mt-3 space-y-2"
+          >
+            <div className="flex gap-2">
+              {[0, 0.2, 0.4].map((delay, index) => (
+                <motion.div
+                  key={index}
+                  className="w-2.5 h-2.5 bg-green-400 rounded-full"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 0.6,
+                    delay,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </div>
+            <p className="text-gray-400 text-xs italic">
+              Checking marine underwriting conditions...
+            </p>
+          </motion.div>
+
+          {/* Marine U/W Results */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 3, type: "spring" }}
+            className="mt-6 bg-green-50 border border-green-200 rounded-xl p-4 max-w-lg mx-auto"
+          >
+            <h4 className="text-lg font-semibold text-green-700 mb-3">U/W Eligibility Results</h4>
+            <div className="space-y-3 text-sm text-green-800">
+              <div className="bg-white rounded-lg p-3 border border-green-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="text-green-600" size={16} />
+                  <span className="font-medium">Missing Field Identification</span>
+                </div>
+                <p className="text-xs text-green-600">All required fields present ✓</p>
+              </div>
+              
+              <div className="bg-white rounded-lg p-3 border border-green-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="text-green-600" size={16} />
+                  <span className="font-medium">Mismatch Identification</span>
+                </div>
+                <p className="text-xs text-green-600">No data inconsistencies found ✓</p>
+              </div>
+              
+              <div className="bg-white rounded-lg p-3 border border-green-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <ShieldCheck className="text-green-600" size={16} />
+                  <span className="font-medium">U/W Decision</span>
+                </div>
+                <p className="text-xs text-green-600">Approved for standard marine coverage ✓</p>
+              </div>
+              
+              <div className="bg-white rounded-lg p-3 border border-green-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="text-green-600" size={16} />
+                  <span className="font-medium">Logic Applied</span>
+                </div>
+                <p className="text-xs text-green-600">Route risk assessment: Low risk ✓</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* 📝 Info Text */}
+          <p className="text-gray-400 text-sm italic">
+            "Marine-specific rules evaluated for cargo type, route, and voyage conditions."
+          </p>
         </motion.div>
       );
 
-    // 🅳 QUOTE & PAYMENT
+    // 🅴 QUOTE & PAYMENT
     case "quote":
       return (
         <>
@@ -617,23 +541,23 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
             <motion.div {...fade} className="text-center space-y-5">
               <div className="bg-gradient-to-br from-[#faf5ff] to-[#fce7f3] p-6 rounded-2xl border border-fuchsia-200 max-w-sm mx-auto shadow-md text-center">
                 <h3 className="text-2xl font-semibold text-fuchsia-600 mb-4">
-                  Health Insurance Quote
+                  Marine Premium Quote
                 </h3>
 
                 <p className="text-gray-700 mb-6">
-                  Your calculated health insurance premium is shown below. Proceed to
+                  Your calculated marine insurance premium is shown below. Proceed to
                   complete your payment.
                 </p>
 
                 <div className="bg-white border border-fuchsia-100 rounded-xl py-4 mb-6 shadow-sm">
                   <span className="text-gray-600 text-sm font-medium">
-                    Annual Premium
+                    Total Premium
                   </span>
                   <div className="text-3xl font-bold text-fuchsia-600 mt-1">
-                    ₹18,500
+                    ₹1,12,500
                   </div>
                   <div className="text-sm text-gray-500 mt-1">
-                    (Family of 4, ₹5L coverage)
+                    (2.5% of ₹45,00,000 cargo value)
                   </div>
                 </div>
 
@@ -667,7 +591,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
                             </label>
                             <input
                               type="text"
-                              placeholder="Sarah Johnson"
+                              placeholder="Ocean Freight Ltd"
                               className="w-full mt-1 px-3 py-2 rounded-md bg-[#0e1320] border border-gray-600 text-gray-200 focus:border-fuchsia-500 outline-none text-sm"
                             />
                           </div>
@@ -710,7 +634,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
                             <span className="text-gray-300 font-medium text-sm">
                               Amount:{" "}
                               <span className="text-fuchsia-400">
-                                Rs. 18,500
+                                Rs. 1,12,500
                               </span>
                             </span>
                             <Button
@@ -718,7 +642,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
                                 setPaymentSuccess(true);
                                 setTimeout(() => {
                                   setShowPaymentPopup(false);
-                                  manualStepCompletion(); // move to next step
+                                  manualStepCompletion();
                                 }, 1500);
                               }}
                               className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white"
@@ -776,7 +700,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
         </>
       );
 
-    // 🅴 AML / SANCTIONS
+    // 🅵 AML / SANCTIONS
     case "aml":
       return (
         <motion.div {...fade} className="text-left space-y-8">
@@ -797,19 +721,20 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
             <div className="space-y-2 text-sm text-gray-700">
               <p>
                 <span className="font-medium text-gray-500">Risk Class:</span>{" "}
-                Standard
-              </p>
-              <p>
-                <span className="font-medium text-gray-500">Coverage:</span> ₹5,00,000
+                Standard Marine
               </p>
               <p>
                 <span className="font-medium text-gray-500">Premium:</span>{" "}
-                ₹18,500
+                ₹1,12,500
+              </p>
+              <p>
+                <span className="font-medium text-gray-500">Coverage:</span>{" "}
+                All Risks Marine Cargo
               </p>
               <p>
                 <span className="font-medium text-gray-500">AML:</span> Cleared
                 <span className="text-xs text-gray-400 ml-2">
-                  (Audit ID: AML-HEALTH-99321)
+                  (Audit ID: AML-MARINE-99321)
                 </span>
               </p>
             </div>
@@ -832,63 +757,53 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
 
           {/* ================= Narration ================= */}
           <p className="text-gray-500 text-sm italic text-center">
-            “Decision + audit trail, ready for handoff to PAS/Policy Admin.”
+            "Decision + audit trail, ready for handoff to PAS/Policy Admin."
           </p>
 
           {/* ================= Audit Trail Modal ================= */}
           {showAudit && (
             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50">
-              {" "}
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3 }}
                 className="bg-[#1b243c] p-6 rounded-2xl shadow-2xl w-[90%] max-w-lg border border-gray-700"
               >
-                {" "}
                 <div className="flex justify-between items-center mb-4">
-                  {" "}
                   <h3 className="text-lg font-semibold text-rose-400 flex items-center gap-2">
-                    {" "}
-                    <History /> Audit Trail{" "}
-                  </h3>{" "}
+                    <History /> Audit Trail
+                  </h3>
                   <button
                     onClick={() => setShowAudit(false)}
                     className="text-gray-400 hover:text-white"
                   >
-                    {" "}
-                    ✕{" "}
-                  </button>{" "}
-                </div>{" "}
+                    ✕
+                  </button>
+                </div>
                 <div className="bg-[#12182b] rounded-lg p-4 space-y-2 max-h-64 overflow-y-auto text-sm">
-                  {" "}
                   {auditEvents.map((item, i) => (
                     <div
                       key={i}
                       className="flex justify-between border-b border-gray-700/50 pb-1"
                     >
-                      {" "}
-                      <span className="text-gray-400">{item.time}</span>{" "}
-                      <span className="text-gray-200">{item.event}</span>{" "}
+                      <span className="text-gray-400">{item.time}</span>
+                      <span className="text-gray-200">{item.event}</span>
                     </div>
-                  ))}{" "}
-                </div>{" "}
+                  ))}
+                </div>
                 <div className="flex justify-center mt-6">
-                  {" "}
                   <Lottie
                     animationData={auditAnim}
                     loop
                     style={{ height: 80 }}
-                  />{" "}
-                </div>{" "}
+                  />
+                </div>
                 <div className="flex justify-end mt-4">
-                  {" "}
                   <button className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                    {" "}
-                    Export Audit Log{" "}
-                  </button>{" "}
-                </div>{" "}
-              </motion.div>{" "}
+                    Export Audit Log
+                  </button>
+                </div>
+              </motion.div>
             </div>
           )}
         </motion.div>

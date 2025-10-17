@@ -13,6 +13,8 @@ import ResultPhase from "./ResultPhase";
 import UsecaseSelection, { usecases } from "./UsecaseSelection";
 import UploadPhaseHealth from "./UploadPhaseHealth";
 import ProcessingPhaseHealth from "./ProcessingPhaseHealth";
+import ProcessingPhaseMarine from "./ProcessingPhaseMarine";
+import UploadPhaseMarine from "./UploadPhaseMarine";
 
 const UnderwritingAIPlatform = () => {
   const [phase, setPhase] = useState("upload");
@@ -26,6 +28,12 @@ const UnderwritingAIPlatform = () => {
     financial: null,
     medical: null,
     lab: null,
+  });
+  const [selectedFilesMarine, setSelectedFilesMarine] = useState({
+    financial: null,
+    landing: null,
+    invoice: null,
+    packing: null,
   });
 
   // useEffect(() => {
@@ -114,6 +122,36 @@ const UnderwritingAIPlatform = () => {
           {phase === "result" && (
             <ResultPhase
               setSelectedFiles={setSelectedFilesHealth}
+              setPhase={setPhase}
+            />
+          )}
+        </AnimatePresence>
+      )}
+
+      {/* Marine Insurance */}
+      {selectedUsecase && selectedUsecase == "marine" && (
+        <AnimatePresence mode="wait">
+          {/* --- Upload Phase --- */}
+          {phase === "upload" && (
+            <UploadPhaseMarine
+              selectedFiles={selectedFilesMarine}
+              setSelectedFiles={setSelectedFilesMarine}
+              setPhase={setPhase}
+            />
+          )}
+
+          {/* --- Loading Phase --- */}
+          {phase === "loading" && (
+            <LoadingPhase phase={phase} setPhase={setPhase} />
+          )}
+
+          {/* --- Processing Phase --- */}
+          {phase === "processing" && <ProcessingPhaseMarine setPhase={setPhase} />}
+
+          {/* --- Result Phase --- */}
+          {phase === "result" && (
+            <ResultPhase
+              setSelectedFiles={setSelectedFilesMarine}
               setPhase={setPhase}
             />
           )}

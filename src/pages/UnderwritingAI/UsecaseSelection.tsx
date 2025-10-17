@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { HeartPulse, User2, Car, Home, Plane, ArrowRight } from "lucide-react";
+import { HeartPulse, User2, Car, Home, Plane, ArrowRight, Anchor } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 interface Usecase {
@@ -27,6 +27,13 @@ export const usecases = [
     title: "Health Insurance",
     description: "AI-driven claim and policy assessment for health cases.",
     icon: HeartPulse,
+    active: true,
+  },
+  {
+    key: "marine",
+    title: "Marine Insurance",
+    description: "AI-driven risk and claim evaluation for marine operations.",
+    icon: Anchor,
     active: true,
   },
   {
