@@ -22,7 +22,10 @@ import auditAnim from "@/assets/lottie/audit.json";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function ProcessStageContentMarine({ stepKey, manualStepCompletion }) {
+export default function ProcessStageContentMarine({
+  stepKey,
+  manualStepCompletion,
+}) {
   const [showAudit, setShowAudit] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
 
@@ -135,8 +138,8 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
               />
             </div>
             <p className="text-gray-500 text-sm italic text-center">
-              Zen Pilot ingests marine documents & cargo data; normalizes features for
-              marine underwriting.
+              Zen Pilot ingests marine documents & cargo data; normalizes
+              features for marine underwriting.
             </p>
           </div>
 
@@ -155,7 +158,9 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
                   <p className="text-lg font-semibold text-gray-800">
                     Ocean Freight Ltd
                   </p>
-                  <p className="text-sm text-gray-500">Marine Cargo Insurance</p>
+                  <p className="text-sm text-gray-500">
+                    Marine Cargo Insurance
+                  </p>
                 </div>
               </div>
 
@@ -170,7 +175,9 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
                 </p>
                 <p>
                   Route:{" "}
-                  <span className="font-medium text-gray-900">Mumbai → Singapore</span>
+                  <span className="font-medium text-gray-900">
+                    Mumbai → Singapore
+                  </span>
                 </p>
               </div>
             </motion.div>
@@ -184,7 +191,8 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
             >
               <div className="flex items-center justify-between border-b pb-2">
                 <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                  <FileText className="text-cyan-500" size={20} /> Marine Document Tray
+                  <FileText className="text-cyan-500" size={20} /> Marine
+                  Document Tray
                 </h4>
                 <span className="text-xs text-gray-500">Auto Extract Mode</span>
               </div>
@@ -216,13 +224,16 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
                     Cargo Value: <TypeWriter text="₹45,00,000" startDelay={0} />
                   </p>
                   <p>
-                    Route: <TypeWriter text="Mumbai → Singapore" startDelay={1000} />
+                    Route:{" "}
+                    <TypeWriter text="Mumbai → Singapore" startDelay={1000} />
                   </p>
                   <p>
-                    Vessel: <TypeWriter text="MV Ocean Star" startDelay={2000} />
+                    Vessel:{" "}
+                    <TypeWriter text="MV Ocean Star" startDelay={2000} />
                   </p>
                   <p>
-                    Transit Days: <TypeWriter text="12 days" startDelay={3000} />
+                    Transit Days:{" "}
+                    <TypeWriter text="12 days" startDelay={3000} />
                   </p>
                   <p>
                     Cargo Type:{" "}
@@ -312,7 +323,9 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
             transition={{ delay: 3, type: "spring" }}
             className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 max-w-md mx-auto"
           >
-            <h4 className="text-lg font-semibold text-blue-700 mb-3">Extraction Findings</h4>
+            <h4 className="text-lg font-semibold text-blue-700 mb-3">
+              Extraction Findings
+            </h4>
             <div className="space-y-2 text-sm text-blue-800">
               <div className="flex justify-between">
                 <span>Insurance Rate:</span>
@@ -335,7 +348,8 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
 
           {/* 🚢 Info Text */}
           <p className="text-gray-400 text-sm italic">
-            "The system automatically extracts cargo details, routes, and values to streamline marine underwriting decisions."
+            "The system automatically extracts cargo details, routes, and values
+            to streamline marine underwriting decisions."
           </p>
         </motion.div>
       );
@@ -412,7 +426,8 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
 
           {/* 📝 Info Text */}
           <p className="text-gray-400 text-sm italic">
-            "Data is standardized to ensure consistent processing across all marine insurance workflows."
+            "Data is standardized to ensure consistent processing across all
+            marine insurance workflows."
           </p>
         </motion.div>
       );
@@ -490,45 +505,58 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
             transition={{ delay: 3, type: "spring" }}
             className="mt-6 bg-green-50 border border-green-200 rounded-xl p-4 max-w-lg mx-auto"
           >
-            <h4 className="text-lg font-semibold text-green-700 mb-3">U/W Eligibility Results</h4>
+            <h4 className="text-lg font-semibold text-green-700 mb-3">
+              U/W Eligibility Results
+            </h4>
             <div className="space-y-3 text-sm text-green-800">
               <div className="bg-white rounded-lg p-3 border border-green-100">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle className="text-green-600" size={16} />
-                  <span className="font-medium">Missing Field Identification</span>
+                  <span className="font-medium">
+                    Missing Field Identification
+                  </span>
                 </div>
-                <p className="text-xs text-green-600">All required fields present ✓</p>
+                <p className="text-xs text-green-600">
+                  All required fields present ✓
+                </p>
               </div>
-              
+
               <div className="bg-white rounded-lg p-3 border border-green-100">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle className="text-green-600" size={16} />
                   <span className="font-medium">Mismatch Identification</span>
                 </div>
-                <p className="text-xs text-green-600">No data inconsistencies found ✓</p>
+                <p className="text-xs text-green-600">
+                  No data inconsistencies found ✓
+                </p>
               </div>
-              
+
               <div className="bg-white rounded-lg p-3 border border-green-100">
                 <div className="flex items-center gap-2 mb-2">
                   <ShieldCheck className="text-green-600" size={16} />
                   <span className="font-medium">U/W Decision</span>
                 </div>
-                <p className="text-xs text-green-600">Approved for standard marine coverage ✓</p>
+                <p className="text-xs text-green-600">
+                  Approved for standard marine coverage ✓
+                </p>
               </div>
-              
+
               <div className="bg-white rounded-lg p-3 border border-green-100">
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="text-green-600" size={16} />
                   <span className="font-medium">Logic Applied</span>
                 </div>
-                <p className="text-xs text-green-600">Route risk assessment: Low risk ✓</p>
+                <p className="text-xs text-green-600">
+                  Route risk assessment: Low risk ✓
+                </p>
               </div>
             </div>
           </motion.div>
 
           {/* 📝 Info Text */}
           <p className="text-gray-400 text-sm italic">
-            "Marine-specific rules evaluated for cargo type, route, and voyage conditions."
+            "Marine-specific rules evaluated for cargo type, route, and voyage
+            conditions."
           </p>
         </motion.div>
       );
@@ -545,8 +573,8 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
                 </h3>
 
                 <p className="text-gray-700 mb-6">
-                  Your calculated marine insurance premium is shown below. Proceed to
-                  complete your payment.
+                  Your calculated marine insurance premium is shown below.
+                  Proceed to complete your payment.
                 </p>
 
                 <div className="bg-white border border-fuchsia-100 rounded-xl py-4 mb-6 shadow-sm">
@@ -728,8 +756,8 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
                 ₹1,12,500
               </p>
               <p>
-                <span className="font-medium text-gray-500">Coverage:</span>{" "}
-                All Risks Marine Cargo
+                <span className="font-medium text-gray-500">Coverage:</span> All
+                Risks Marine Cargo
               </p>
               <p>
                 <span className="font-medium text-gray-500">AML:</span> Cleared
@@ -757,7 +785,7 @@ export default function ProcessStageContentMarine({ stepKey, manualStepCompletio
 
           {/* ================= Narration ================= */}
           <p className="text-gray-500 text-sm italic text-center">
-            "Decision + audit trail, ready for handoff to PAS/Policy Admin."
+            "Reinsurer approved — ready for quote & buy."
           </p>
 
           {/* ================= Audit Trail Modal ================= */}

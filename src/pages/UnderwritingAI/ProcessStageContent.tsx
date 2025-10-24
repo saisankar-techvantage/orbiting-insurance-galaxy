@@ -10,6 +10,9 @@ import {
   UserCircle2,
   Send,
   History,
+  Loader2,
+  DollarSign,
+  ClipboardList,
 } from "lucide-react";
 import Lottie from "lottie-react";
 import extractionAnim from "@/assets/lottie/extraction.json";
@@ -22,7 +25,11 @@ import auditAnim from "@/assets/lottie/audit.json";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
+export default function ProcessStageContent({
+  setPhase,
+  stepKey,
+  manualStepCompletion,
+}) {
   const [showAudit, setShowAudit] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
 
@@ -104,6 +111,25 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
   const handleApprovePayment = () => {
     setStep(5);
   };
+
+  const [showPaymentFlow, setShowPaymentFlow] = useState(false);
+  const [paymentStage, setPaymentStage] = useState(null); // "sending" | "waiting" | "received"
+
+  useEffect(() => {
+    if (showPaymentFlow) {
+      setPaymentStage(null); // start fresh
+      // Step 1: Sending
+      setTimeout(() => setPaymentStage("waiting"), 2000);
+      // Step 2: Waiting → Received
+      setTimeout(() => setPaymentStage("received"), 6000);
+      // Step 3: Move to next step
+      setTimeout(() => {
+        setShowPaymentFlow(false);
+        setPhase("onboarding");
+        //manualStepCompletion(); // go to next phase
+      }, 8000);
+    }
+  }, [showPaymentFlow]);
 
   switch (stepKey) {
     // 🅰️ PROPOSAL INTAKE
@@ -194,28 +220,7 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
                       <FileText size={18} className="text-cyan-500" /> KYC
                       Document
                     </span>
-                    {/* <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                      PDF
-                    </span> */}
                   </div>
-                  {/* <div className="text-sm text-gray-600">
-                    <p>
-                      ID Type:{" "}
-                      <span className="font-medium text-gray-800">Aadhaar</span>
-                    </p>
-                    <p>
-                      Verification:{" "}
-                      <span className="text-green-600 font-medium">
-                        Verified
-                      </span>
-                    </p>
-                    <p>
-                      Issue Date:{" "}
-                      <span className="font-medium text-gray-700">
-                        12 Mar 2020
-                      </span>
-                    </p>
-                  </div> */}
                 </div>
 
                 {/* Medical Report */}
@@ -225,48 +230,25 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
                       <HeartPulse size={18} className="text-pink-500" /> Medical
                       Report
                     </span>
-                    {/* <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                      Lab Report
-                    </span> */}
                   </div>
-                  {/* <div className="text-sm text-gray-600">
-                    <p>
-                      Lab:{" "}
-                      <span className="font-medium text-gray-800">
-                        Apollo Diagnostics
-                      </span>
-                    </p>
-                    <p>
-                      Report Date:{" "}
-                      <span className="font-medium text-gray-700">
-                        24 Sep 2025
-                      </span>
-                    </p>
-                    <p>
-                      Status:{" "}
-                      <span className="text-blue-600 font-medium">Ready</span>
-                    </p>
-                  </div> */}
                 </div>
-
-                <div className="space-y-1 text-sm text-gray-700 leading-relaxed">
-                  <p>
-                    Age: <TypeWriter text="444" startDelay={0} />
-                  </p>
-                  <p>
-                    Condition: <TypeWriter text="Diiabetes" startDelay={1000} />
-                  </p>
-                  <p>
-                    HbA1c: <TypeWriter text="7..1" startDelay={2000} />
-                  </p>
-                  <p>
-                    Duration: <TypeWriter text="5  years" startDelay={3000} />
-                  </p>
-                  <p>
-                    Medication:{" "}
-                    <TypeWriter text="Meetformin" startDelay={4000} />
-                  </p>
-                </div>
+              </div>
+              <div className="space-y-1 text-sm text-gray-700 leading-relaxed">
+                <p>
+                  Age: <TypeWriter text="444" startDelay={0} />
+                </p>
+                <p>
+                  Condition: <TypeWriter text="Diiabetes" startDelay={1000} />
+                </p>
+                <p>
+                  HbA1c: <TypeWriter text="7..1" startDelay={2000} />
+                </p>
+                <p>
+                  Duration: <TypeWriter text="5  years" startDelay={3000} />
+                </p>
+                <p>
+                  Medication: <TypeWriter text="Meetformin" startDelay={4000} />
+                </p>
               </div>
             </motion.div>
           </div>
@@ -276,7 +258,7 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
     // 🅱️ MEDICAL
     case "medical":
       return (
-        <motion.div {...fade} className="text-center space-y-4">
+        <motion.div {...fade} className="text-center space-y-4 w-50">
           <h3 className="text-2xl font-semibold text-blue-400 flex items-center justify-center gap-2">
             <HeartPulse className="w-6 h-6" />
             Medical Data Extraction
@@ -357,7 +339,7 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
       return (
         <motion.div {...fade} className="text-center space-y-4">
           <h3 className="text-2xl font-semibold text-green-400">
-            U/W Eligibility Check
+            Underwriting Eligibility Check
           </h3>
           <p className="text-gray-400 text-sm mb-2">
             Running U/W Eligibility Rules...
@@ -432,78 +414,401 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
       return (
         <motion.div {...fade} className="justify-start">
           {/* Header */}
-          <h3 className="text-2xl font-semibold text-amber-400 flex mb-4 gap-2">
+          <h3 className="text-2xl font-semibold text-amber-400 flex mb-4 gap-1">
             Reinsurer Rating
           </h3>
-          <div className="flex flex-col md:flex-row justify-center items-start gap-6 w-full max-w-4xl mx-auto">
-            {/* Left Column: API Request + Animation */}
-            <div className="flex flex-col gap-4 w-full md:w-1/2">
-              {/* API Request Panel */}
+
+          <div className="flex flex-col md:flex-row justify-center items-start gap-6 w-full max-w-5xl mx-auto relative overflow-visible">
+            {/* Left Column: API Request */}
+            <div className="flex flex-col gap-4 w-full md:w-1/2 relative z-10">
               <div className="bg-[#1a1c2a] rounded-xl shadow-md border border-gray-700 w-full text-left overflow-hidden">
                 <div className="bg-[#2a2c3f] px-4 py-2 flex justify-between items-center border-b border-gray-600">
                   <span className="text-green-400 font-mono font-semibold">
                     POST
                   </span>
                   <span className="text-gray-300 font-mono">
-                    {"/api/reinsurer/lookup"}
+                    /api/reinsurer/lookup
                   </span>
                 </div>
                 <pre className="p-4 text-sm text-green-400 font-mono">
                   {`{
-        "age": 45,
-        "sum_assured": "50L",
-        "bmi": 29.3,
-        "medical_class": "II",
-        "smoker": false
-      }`}
+  "age": 45,
+  "sum_assured": "50L",
+  "bmi": 29.3,
+  "medical_class": "II",
+  "smoker": false
+}`}
                 </pre>
               </div>
 
-              {/* API Call Animation */}
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-gray-400 text-sm italic">
-                  Calling reinsurer API...
-                </p>
-                <Lottie animationData={apiAnim} loop style={{ height: 80 }} />
-              </div>
-            </div>
-
-            {/* Right Column: Response + Outcome */}
-            <div className="flex flex-col gap-4 w-full md:w-1/2 items-center">
-              {/* Streaming Response */}
-              <motion.div
-                className="bg-[#1a223a] p-4 rounded-xl border border-gray-700 w-full text-sm text-gray-300 shadow-lg font-mono"
+              {/* Payload trigger text */}
+              <motion.p
+                className="text-gray-400 text-sm italic text-center mt-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
+              >
+                Triggering request to reinsurer API...
+              </motion.p>
+            </div>
+
+            {/* Animated “Data Beam” Between Request and Response */}
+            <div className="absolute left-[48%] top-1/2 -translate-y-1/2 flex flex-col items-center">
+              {/* Beam line */}
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: "160px" }}
+                transition={{ duration: 0.8, delay: 0.4, ease: "easeInOut" }}
+                className="w-[2px] bg-gradient-to-b from-green-400 via-amber-400 to-amber-500 rounded-full shadow-[0_0_12px_rgba(251,191,36,0.6)]"
+              />
+
+              {/* Outgoing pulse (API trigger) */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: [0, 1.2, 0.8, 1],
+                  opacity: [0, 1, 1, 0],
+                  y: [0, 160],
+                }}
+                transition={{
+                  delay: 0.6,
+                  duration: 1.8,
+                  ease: "easeInOut",
+                  repeat: 0,
+                }}
+                className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.7)]"
+              />
+
+              {/* Returning pulse (response) */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: [0, 1.1, 1],
+                  opacity: [0, 1, 1, 0],
+                  y: [160, 0],
+                }}
+                transition={{
+                  delay: 2.6,
+                  duration: 1.8,
+                  ease: "easeInOut",
+                  repeat: 0,
+                }}
+                className="w-4 h-4 rounded-full bg-gradient-to-r from-amber-400 to-green-400 shadow-[0_0_15px_rgba(251,191,36,0.7)]"
+              />
+
+              {/* Reinsurer Node */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: 1,
+                  boxShadow: [
+                    "0 0 0px rgba(251,191,36,0.3)",
+                    "0 0 25px rgba(251,191,36,0.5)",
+                    "0 0 0px rgba(251,191,36,0.3)",
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-400/20 border border-amber-400/50 mt-6"
+              >
+                <motion.span
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  className="text-amber-300 text-sm font-semibold"
+                >
+                  R
+                </motion.span>
+              </motion.div>
+            </div>
+
+            {/* Right Column: Response */}
+            <div className="flex flex-col gap-4 w-full md:w-1/2 items-center">
+              {/* Response header */}
+              <motion.p
+                className="text-gray-400 text-sm italic"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.8 }}
+              >
+                Awaiting response from reinsurer...
+              </motion.p>
+
+              {/* Response Box */}
+              <motion.div
+                className="bg-[#1a223a] p-4 rounded-xl border border-gray-700 w-full text-sm text-gray-300 shadow-lg font-mono"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 3.4 }}
               >
                 <TypeWriterPlain
-                  text={`{ "load": "15%", "risk_class": "Substandard B" }`}
+                  text={`{ "load": "15%", "risk_class": "Silver" }`}
+                  speed={40}
                 />
               </motion.div>
 
-              {/* Outcome Badge */}
+              {/* Response Glow Animation */}
               <motion.div
-                className="bg-[#2e2b1f] inline-block px-4 py-2 rounded-full text-amber-300 font-semibold shadow-md"
+                className="bg-[#2e2b1f] inline-block px-5 py-2 rounded-full text-amber-300 font-semibold shadow-md"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 1.5, type: "spring", stiffness: 100 }}
+                transition={{ delay: 5, type: "spring", stiffness: 100 }}
               >
-                Substandard B — +15% Load
+                Silver — +15% Load
               </motion.div>
 
-              {/* Narration */}
-              <p className="text-gray-400 text-sm italic mt-2 text-center">
-                “Live lookup to reinsurer logic/table/calculator via API; result
-                feeds into pricing.”
-              </p>
+              <motion.p
+                className="text-gray-400 text-sm italic mt-2 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 6 }}
+              >
+                “Reinsurer API returned classification and load factor for
+                pricing.”
+              </motion.p>
             </div>
           </div>
         </motion.div>
       );
 
+    case "hitl":
+      return (
+        <motion.div
+          {...fade}
+          className="flex flex-col items-center justify-center space-y-8 text-left"
+        >
+          {/* Header */}
+          <h3 className="text-2xl font-semibold text-amber-400 flex items-center gap-2">
+            <ShieldCheck className="text-amber-400" /> Final Summary
+          </h3>
+
+          {/* Decision Summary Cards */}
+          <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
+            {/* Reinsurer Summary */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex-1 bg-[#1b243c] border border-gray-700 rounded-2xl p-5 shadow-lg"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-amber-400 text-xl font-semibold">
+                  Reinsurer
+                </span>
+                <CheckCircle className="text-green-400" />
+              </div>
+              <div className="space-y-2 text-sm font-mono text-gray-300">
+                <p>
+                  <span className="text-gray-500">Risk Class:</span> Silver
+                </p>
+                <p>
+                  <span className="text-gray-500">Load:</span> +15%
+                </p>
+                <p>
+                  <span className="text-gray-500">Status:</span>{" "}
+                  <span className="text-green-400">Approved ✅</span>
+                </p>
+              </div>
+            </motion.div>
+
+            {/* AML Summary */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex-1 bg-[#1b243c] border border-gray-700 rounded-2xl p-5 shadow-lg"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-green-400 text-xl font-semibold">
+                  AML
+                </span>
+                <CheckCircle className="text-green-400" />
+              </div>
+              <div className="space-y-2 text-sm font-mono text-gray-300">
+                <p>
+                  <span className="text-gray-500">AML Check:</span> Cleared
+                </p>
+                <p>
+                  <span className="text-gray-500">Audit ID:</span> AML-LOG-99321
+                </p>
+                <p>
+                  <span className="text-gray-500">Status:</span>{" "}
+                  <span className="text-green-400">Approved ✅</span>
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Divider / Narration */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-gray-400 italic text-sm text-center"
+          >
+            “Both reinsurer and AML validations are complete — ready for policy
+            confirmation.”
+          </motion.p>
+
+          {/* Approve and Continue Button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6 }}
+            className="flex justify-center"
+          >
+            <button
+              onClick={() => manualStepCompletion()} // define this function below
+              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl text-lg font-semibold shadow-md transition"
+            >
+              <CheckCircle size={20} /> Approve & Continue
+            </button>
+          </motion.div>
+        </motion.div>
+      );
+
     // 🅳 QUOTE & PAYMENT
     case "quote":
+      return (
+        <>
+          {stepKey === "quote" && (
+            <motion.div {...fade} className="text-center space-y-5">
+              {/* Quote Card */}
+              <div className="bg-gradient-to-br from-[#faf5ff] to-[#fce7f3] p-6 rounded-2xl border border-fuchsia-200 max-w-sm mx-auto shadow-md text-center">
+                <h3 className="text-2xl font-semibold text-fuchsia-600 mb-4">
+                  Premium Quote
+                </h3>
+
+                <p className="text-gray-700 mb-6">
+                  The system has recommented a premium quote for the applicant.
+                </p>
+
+                <div className="bg-white border border-fuchsia-100 rounded-xl py-4 mb-6 shadow-sm">
+                  <span className="text-gray-600 text-sm font-medium">
+                    Total Amount
+                  </span>
+                  <div className="text-3xl font-bold text-fuchsia-600 mt-1">
+                    $25,300
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setShowPaymentFlow(true)}
+                  className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-6 py-2 rounded-sm font-semibold shadow-sm transition-all"
+                >
+                  Send Payment Request
+                </Button>
+              </div>
+
+              {/* --- Payment Flow Simulation Popup --- */}
+              {showPaymentFlow && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="bg-[#1a223a] p-8 rounded-2xl border border-gray-700 text-center max-w-md w-full shadow-2xl relative"
+                  >
+                    <h4 className="text-2xl font-semibold text-fuchsia-400 mb-6">
+                      Payment Processing
+                    </h4>
+
+                    {/* Step Simulation: Sending → Waiting → Received */}
+                    {!paymentStage ? (
+                      <motion.div
+                        key="sending"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        className="space-y-4"
+                      >
+                        <p className="text-gray-300 text-sm">
+                          Sending payment request to the customer for the quoted
+                          premium...
+                        </p>
+                        <Loader2
+                          className="animate-spin text-fuchsia-400 mx-auto"
+                          size={36}
+                        />
+                      </motion.div>
+                    ) : paymentStage === "waiting" ? (
+                      <motion.div
+                        key="waiting"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        className="space-y-4"
+                      >
+                        <p className="text-gray-300 text-sm">
+                          Waiting for customer to complete the payment...
+                        </p>
+                        <div className="flex justify-center items-center gap-2">
+                          <motion.div
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{ repeat: Infinity, duration: 1 }}
+                            className="w-3 h-3 bg-fuchsia-400 rounded-full"
+                          />
+                          <motion.div
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 1,
+                              delay: 0.2,
+                            }}
+                            className="w-3 h-3 bg-fuchsia-400 rounded-full"
+                          />
+                          <motion.div
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 1,
+                              delay: 0.4,
+                            }}
+                            className="w-3 h-3 bg-fuchsia-400 rounded-full"
+                          />
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="received"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8 }}
+                        className="space-y-4"
+                      >
+                        <div className="flex flex-col items-center space-y-4">
+                          <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-10 h-10 text-green-400"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                          <h4 className="text-xl text-green-400 font-semibold">
+                            Payment Received
+                          </h4>
+                          <p className="text-gray-400 text-sm">
+                            The customer has successfully completed the payment.
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </>
+      );
+
       return (
         <>
           {stepKey === "quote" && (
@@ -523,7 +828,7 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
                     Total Amount
                   </span>
                   <div className="text-3xl font-bold text-fuchsia-600 mt-1">
-                    ₹25,300
+                    $25,300
                   </div>
                 </div>
 
@@ -687,14 +992,14 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
             <div className="space-y-2 text-sm text-gray-700">
               <p>
                 <span className="font-medium text-gray-500">Risk Class:</span>{" "}
-                Substandard B
+                Silver
               </p>
               <p>
                 <span className="font-medium text-gray-500">Load:</span> +15%
               </p>
               <p>
                 <span className="font-medium text-gray-500">Premium:</span>{" "}
-                ₹25,300
+                $25,300
               </p>
               <p>
                 <span className="font-medium text-gray-500">AML:</span> Cleared
@@ -706,10 +1011,13 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
 
             <div className="flex flex-wrap gap-3 justify-center mt-6">
               <button className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                <FileText size={16} /> Email PDF
+                <FileText size={16} /> Send cover note
               </button>
-              <button className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                <Send size={16} /> Send to Policy Admin
+              <button
+                className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                onClick={() => manualStepCompletion()}
+              >
+                <ClipboardList size={16} /> Final summary
               </button>
               <button
                 onClick={() => setShowAudit(true)}
@@ -722,7 +1030,7 @@ export default function ProcessStageContent({ stepKey, manualStepCompletion }) {
 
           {/* ================= Narration ================= */}
           <p className="text-gray-500 text-sm italic text-center">
-            “Decision + audit trail, ready for handoff to PAS/Policy Admin.”
+            “Reinsurer approved — ready for quote & buy.”
           </p>
 
           {/* ================= Audit Trail Modal ================= */}

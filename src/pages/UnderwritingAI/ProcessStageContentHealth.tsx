@@ -832,7 +832,7 @@ export default function ProcessStageContentHealth({ stepKey, manualStepCompletio
 
           {/* ================= Narration ================= */}
           <p className="text-gray-500 text-sm italic text-center">
-            “Decision + audit trail, ready for handoff to PAS/Policy Admin.”
+            “Reinsurer approved — ready for quote & buy.”
           </p>
 
           {/* ================= Audit Trail Modal ================= */}

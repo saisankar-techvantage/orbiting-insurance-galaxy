@@ -1,172 +1,217 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FaFilePdf } from "react-icons/fa";
+import { FaFilePdf, FaUserCircle, FaFolder } from "react-icons/fa";
+import { Bot } from "lucide-react";
+import log_light from "@/assets/logo_light.png";
 
-export default function UploadPhase({
-  selectedFiles,
-  setSelectedFiles,
-  setPhase,
-}) {
-  const panels = [
-    {
-      key: "customer",
-      title: "Customer Profile",
-      files: [
-        "Customer_Profile_1.csv",
-        "Customer_Profile_2.csv",
-        "Personal_Details.csv",
-      ],
-    },
-    {
-      key: "financial",
-      title: "KYC",
-      files: ["Income_Data.csv", "Tax_Statements.csv", "Credit_Score.csv"],
-    },
-    {
-      key: "behavior",
-      title: "Medical Report",
-      files: ["Claim_History.csv", "Travel_Patterns.csv", "Health_Checks.csv"],
-    },
+export default function UploadPhase({ setPhase }) {
+  const [agentAction, setAgentAction] = useState("idle"); // idle | travelling | returning | done
+  const [fetchedDocs, setFetchedDocs] = useState([]);
+  const [processing, setProcessing] = useState(false);
+
+  const documents = [
+    "Applicant_Data.json",
+    "KYC.pdf",
+    "Medical_Summary.pdf",
+    "Income_Certificate.csv",
   ];
 
-  const [draggingFile, setDraggingFile] = useState(null);
-  const allFilesSelected = Object.values(selectedFiles).every(Boolean);
+  const handleAgentClick = () => {
+    if (agentAction !== "idle") return;
 
-  // --- Drag & Drop Handlers ---
-  const handleDragStart = (e, file, type) => {
-    e.dataTransfer.setData("file", JSON.stringify({ file, type }));
-  };
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const { file, type } = JSON.parse(e.dataTransfer.getData("file"));
-    setSelectedFiles((prev) => ({ ...prev, [type]: file }));
-  };
-  const handleDragOver = (e) => e.preventDefault();
+    setAgentAction("travelling");
 
-  // --- Touch Handlers ---
-  const handleTouchStart = (e, file, type) => {
-    setDraggingFile({ file, type });
-  };
-  const handleTouchMove = (e) => e.preventDefault();
-  const handleTouchEnd = (e) => {
-    if (!draggingFile) return;
-    const dropZone = document.elementFromPoint(
-      e.changedTouches[0].clientX,
-      e.changedTouches[0].clientY
-    );
-    if (dropZone && dropZone.id === "ai-drop-zone") {
-      setSelectedFiles((prev) => ({
-        ...prev,
-        [draggingFile.type]: draggingFile.file,
-      }));
-    }
-    setDraggingFile(null);
-  };
+    // Agent travels to the right (touch Policy Admin)
+    setTimeout(() => {
+      setAgentAction("returning");
+      setFetchedDocs(documents);
+    }, 2500);
 
-  const startAnalysis = () => setPhase("processing");
+    // Agent comes back to Zentis
+    setTimeout(() => {
+      setAgentAction("done");
+      setProcessing(true);
+    }, 5000);
+  };
 
   return (
     <motion.div
-      key="upload"
+      key="uploadPhase"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full flex flex-col justify-center items-center px-8"
+      className="relative w-full h-full overflow-hidden flex items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white"
     >
-      <h2 className="text-2xl font-semibold text-gray-800 my-10">
-        Upload Required Files
-      </h2>
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15)_0%,transparent_70%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(180deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-      {/* Main Layout */}
-      <div className="flex justify-center items-center gap-10 w-full max-w-6xl">
-        {/* File Panels */}
-        <div className="flex gap-6">
-          {panels.map((panel, i) => (
-            <motion.div
-              key={panel.key}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: i * 0.1 }}
-              className="w-56 bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col"
-            >
-              <h3 className="text-center text-blue-600 font-medium mb-2">
-                {panel.title}
-              </h3>
-              <div className="space-y-2 overflow-hidden">
-                {panel.files.map((file) => (
-                  <motion.div
-                    key={file}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, file, panel.key)}
-                    onTouchStart={(e) => handleTouchStart(e, file, panel.key)}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                    whileHover={{ scale: 1.03 }}
-                    className={`p-2 bg-gray-50 border border-gray-200 rounded-lg cursor-grab hover:bg-blue-50 flex items-center gap-2 transition ${
-                      draggingFile?.file === file ? "opacity-70 scale-105" : ""
-                    }`}
-                  >
-                    <FaFilePdf className="text-red-500 text-lg" />
-                    <span className="text-sm text-gray-800 truncate">
-                      {file}
-                    </span>
-                  </motion.div>
-                ))}
+      {/* LEFT: Zentis */}
+      <motion.div
+        initial={{ x: "-100%", opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="absolute left-12 -translate-y-1/2 bg-gradient-to-br from-blue-950 via-blue-900 to-gray-900 rounded-2xl shadow-xl border border-blue-800/30 p-6 w-72 flex flex-col items-center"
+      >
+        <img
+          src={log_light}
+          alt="Zentis"
+          className="w-16 h-16 object-contain mb-3"
+        />
+        <h3 className="text-blue-200 font-semibold text-lg mb-3">
+          Zentis System
+        </h3>
+
+        {fetchedDocs.length === 0 ? (
+          <p className="text-gray-400 text-sm text-center">
+            Awaiting applicant data...
+          </p>
+        ) : (
+          <div className="w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <FaUserCircle className="text-blue-400 text-4xl" />
+              <div>
+                <h3 className="text-md font-semibold text-blue-200">
+                  Applicant’s Data
+                </h3>
+                <p className="text-xs text-gray-400">Fetched Info</p>
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Connection Line */}
-        <div className="w-20 h-[2px] bg-gradient-to-r from-blue-200 via-blue-500 to-blue-200 rounded-full" />
-
-        {/* AI Core */}
-        <motion.div
-          id="ai-drop-zone"
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className={`relative w-80 p-4 rounded-xl border-2 border-dashed transition-all flex flex-col items-center justify-center ${
-            allFilesSelected
-              ? "border-blue-500 bg-blue-50"
-              : "border-gray-300 bg-gray-50"
-          } shadow-sm`}
-        >
-          <div className="z-10 text-center">
-            <h3 className="text-xl font-semibold text-blue-700 mb-3">
-              AI Core System
-            </h3>
+            </div>
 
             <div className="space-y-2">
-              {Object.entries(selectedFiles).map(([key, val]) => (
-                <div
-                  key={key}
-                  className={`p-2 rounded-md text-sm font-medium ${
-                    val
-                      ? "bg-white text-blue-700 border border-blue-200"
-                      : "bg-gray-100 text-gray-400 border border-gray-200"
-                  }`}
+              {documents.map((doc, i) => (
+                <motion.div
+                  key={doc}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + i * 0.2 }}
+                  className="flex items-center gap-2 bg-gray-800/50 border border-gray-700 rounded-lg px-3 py-2 text-sm text-green-200 border-green-500/50 bg-green-500/20"
                 >
-                  {val ? `✅ ${val}` : `Awaiting ${key} file...`}
-                </div>
+                  <FaFilePdf className="text-red-400" />
+                  <span className="truncate">{doc}</span>
+                </motion.div>
               ))}
             </div>
 
-            <button
-              onClick={startAnalysis}
-              disabled={!allFilesSelected}
-              className={`mt-5 px-5 py-2 rounded-lg font-semibold transition ${
-                allFilesSelected
-                  ? "bg-blue-600 text-white hover:bg-blue-500 shadow-sm"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              {allFilesSelected
-                ? "Start AI Analysis"
-                : "Select 3 Files to Begin"}
-            </button>
+            {processing && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                onClick={() => setPhase("checking")}
+                className="mt-5 px-5 py-2 bg-green-500 hover:bg-green-400 text-black rounded-sm font-semibold shadow-md transition"
+              >
+                Run Data Verification
+              </motion.button>
+            )}
           </div>
+        )}
+      </motion.div>
+
+      {/* RIGHT: Policy Admin System */}
+      <motion.div
+        initial={{ x: "100%", opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
+        className="absolute right-12 -translate-y-1/2 bg-gradient-to-br from-cyan-900 via-blue-800 to-cyan-950 rounded-2xl shadow-lg border border-cyan-500/40 p-6 w-72 flex flex-col items-center"
+      >
+        <h3 className="text-blue-100 text-lg font-semibold mb-3 text-center">
+          Policy Administration System
+        </h3>
+
+        <div className="grid grid-cols-3 gap-4 mt-2">
+          {[...Array(9)].map((_, i) => {
+            const isTargetFolder = i === 4; // middle folder = target
+            const isActive = agentAction === "travelling" && isTargetFolder;
+            const isPicked =
+              agentAction === "returning" || agentAction === "done";
+
+            return (
+              <motion.div
+                key={i}
+                animate={{
+                  scale: isActive ? [1, 1.2, 1] : 1,
+                  opacity: isPicked && isTargetFolder ? 0.4 : 1,
+                }}
+                transition={{ duration: 0.6, repeat: isActive ? 2 : 0 }}
+                className={`h-14 w-14 rounded-md flex items-center justify-center border ${
+                  isTargetFolder
+                    ? "border-yellow-400/60 bg-yellow-400/10"
+                    : "border-gray-700 bg-gray-800/40"
+                }`}
+              >
+                <FaFolder
+                  className={`text-2xl ${
+                    isTargetFolder
+                      ? "text-yellow-400"
+                      : "text-gray-400 opacity-80"
+                  }`}
+                />
+              </motion.div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* CENTER: AI Agent */}
+      <motion.div
+        animate={{
+          x:
+            agentAction === "travelling"
+              ? 600 // moves to right system
+              : agentAction === "returning"
+              ? 0 // returns to Zentis
+              : 0,
+        }}
+        transition={{ duration: 2, ease: "easeInOut" }}
+        className="absolute left-[350px] bottom-[180px] flex flex-col items-center space-y-2"
+      >
+        <motion.div
+          onClick={handleAgentClick}
+          animate={{
+            y: [0, -5, 0],
+            scale: agentAction === "travelling" ? 1.15 : 1,
+          }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg cursor-pointer ${
+            agentAction === "done"
+              ? "bg-gradient-to-br from-green-400 to-emerald-300"
+              : "bg-gradient-to-br from-blue-400 to-cyan-300"
+          }`}
+        >
+          <Bot className="text-black text-3xl" />
         </motion.div>
-      </div>
+
+        {agentAction === "idle" && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="px-4 py-2 bg-white/10 border border-blue-300/30 backdrop-blur-md text-sm text-blue-100 rounded-xl shadow-lg text-center"
+          >
+            Click to fetch applicant data
+          </motion.div>
+        )}
+
+        {agentAction === "travelling" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-sm text-cyan-200"
+          >
+            Fetching data...
+          </motion.div>
+        )}
+
+        {agentAction === "done" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-sm text-green-300"
+          >
+            Data retrieved successfully!
+          </motion.div>
+        )}
+      </motion.div>
     </motion.div>
   );
 }

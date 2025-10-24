@@ -34,11 +34,7 @@ export default function UploadPhaseMarine({
     {
       key: "packing",
       title: "Packing List",
-      files: [
-        "Item_List.csv",
-        "Cargo_Weights.csv",
-        "Packaging_Details.csv",
-      ],
+      files: ["Item_List.csv", "Cargo_Weights.csv", "Packaging_Details.csv"],
     },
   ];
 
@@ -115,8 +111,9 @@ export default function UploadPhaseMarine({
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                     whileHover={{ scale: 1.03 }}
-                    className={`p-2 bg-gray-50 border border-gray-200 rounded-lg cursor-grab hover:bg-blue-50 flex items-center gap-2 transition ${draggingFile?.file === file ? "opacity-70 scale-105" : ""
-                      }`}
+                    className={`p-2 bg-gray-50 border border-gray-200 rounded-lg cursor-grab hover:bg-blue-50 flex items-center gap-2 transition ${
+                      draggingFile?.file === file ? "opacity-70 scale-105" : ""
+                    }`}
                   >
                     <FaFilePdf className="text-red-500 text-lg" />
                     <span className="text-sm text-gray-800 truncate">
@@ -131,51 +128,49 @@ export default function UploadPhaseMarine({
 
         {/* Connection Line */}
         <div className="w-16 h-[2px] bg-gradient-to-r from-blue-200 via-blue-500 to-blue-200 rounded-full" />
-
-        {/* AI Core */}
-        <motion.div
-          id="ai-drop-zone"
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className={`relative w-72 p-3 rounded-xl border-2 border-dashed transition-all flex flex-col items-center justify-center ${allFilesSelected
-              ? "border-blue-500 bg-blue-50"
-              : "border-gray-300 bg-gray-50"
-            } shadow-sm`}
-        >
-          <div className="z-10 text-center">
-            <h3 className="text-xl font-semibold text-blue-700 mb-3">
-              AI Core System
-            </h3>
-
-            <div className="space-y-2">
-              {Object.entries(selectedFiles).map(([key, val]) => (
-                <div
-                  key={key}
-                  className={`p-2 rounded-md text-sm font-medium ${val
-                      ? "bg-white text-blue-700 border border-blue-200"
-                      : "bg-gray-100 text-gray-400 border border-gray-200"
-                    }`}
-                >
-                  {val ? `✅ ${val}` : `Awaiting ${key} file...`}
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={startAnalysis}
-              disabled={!allFilesSelected}
-              className={`mt-5 px-5 py-2 rounded-lg font-semibold transition ${allFilesSelected
-                  ? "bg-blue-600 text-white hover:bg-blue-500 shadow-sm"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-            >
-              {allFilesSelected
-                ? "Start AI Analysis"
-                : "Select 4 Files to Begin"}
-            </button>
-          </div>
-        </motion.div>
       </div>
+      {/* AI Core */}
+      <motion.div
+        id="ai-drop-zone"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        className={`relative w-72 p-3 mt-8 rounded-xl border-2 border-dashed transition-all flex flex-col items-center justify-center ${
+          allFilesSelected
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 bg-gray-50"
+        } shadow-sm`}
+      >
+        <div className="z-10 text-center">
+          <h3 className="text-xl font-semibold text-blue-700 mb-3">Zentis</h3>
+
+          <div className="space-y-2">
+            {Object.entries(selectedFiles).map(([key, val]) => (
+              <div
+                key={key}
+                className={`p-2 rounded-md text-sm font-medium ${
+                  val
+                    ? "bg-white text-blue-700 border border-blue-200"
+                    : "bg-gray-100 text-gray-400 border border-gray-200"
+                }`}
+              >
+                {val ? `✅ ${val}` : `Awaiting ${key} file...`}
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={startAnalysis}
+            disabled={!allFilesSelected}
+            className={`mt-5 px-5 py-2 rounded-lg font-semibold transition ${
+              allFilesSelected
+                ? "bg-blue-600 text-white hover:bg-blue-500 shadow-sm"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            {allFilesSelected ? "Start AI Analysis" : "Select 4 Files to Begin"}
+          </button>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }

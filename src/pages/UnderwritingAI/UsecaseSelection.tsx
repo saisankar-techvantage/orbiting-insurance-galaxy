@@ -1,5 +1,13 @@
 import { motion } from "framer-motion";
-import { HeartPulse, User2, Car, Home, Plane, ArrowRight, Anchor } from "lucide-react";
+import {
+  HeartPulse,
+  User2,
+  Car,
+  Home,
+  Plane,
+  ArrowRight,
+  Anchor,
+} from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 interface Usecase {
@@ -65,7 +73,7 @@ const UsecaseGrid: React.FC<UsecaseGridProps> = ({ setUsecase }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.5, duration: 0.8 }}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full mx-auto px-4"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full mx-auto px-4 mt-4"
     >
       {usecases?.map((usecase, index) => {
         const Icon = usecase.icon;
